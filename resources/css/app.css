@@ -6,6 +6,54 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-user: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Neo-Brutalism Palette */
+    --color-telkom-red: #EE2E24;
+    --color-telkom-white: #FFFFFF;
+    --color-telkom-black: #1A1A1A;
+    
+    /* Layout */
+    --spacing-container: clamp(1rem, 5vw, 3rem);
+}
+
+/* Custom Utilities for Neo-Brutalism */
+@utility neo-box {
+    border: 3px solid var(--color-telkom-black);
+    box-shadow: 5px 5px 0px 0px var(--color-telkom-black);
+    transition: all 0.2s ease-in-out;
+}
+
+@utility neo-box-hover {
+    box-shadow: 2px 2px 0px 0px var(--color-telkom-black);
+    transform: translate(3px, 3px);
+}
+
+@utility neo-button {
+    background-color: var(--color-telkom-red);
+    color: var(--color-telkom-white);
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.75rem 1.5rem;
+    border: 3px solid var(--color-telkom-black);
+    box-shadow: 4px 4px 0px 0px var(--color-telkom-black);
+}
+
+@utility neo-button:hover {
+    box-shadow: 2px 2px 0px 0px var(--color-telkom-black);
+    transform: translate(2px, 2px);
+}
+
+@utility neo-input {
+    width: 100%;
+    border: 3px solid var(--color-telkom-black);
+    padding: 0.75rem;
+    font-weight: 500;
+    outline: none;
+    background-color: var(--color-telkom-white);
+    box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.1);
+}
+
+@utility neo-input:focus {
+    box-shadow: 6px 6px 0px 0px var(--color-telkom-black);
 }
