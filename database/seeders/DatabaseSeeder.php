@@ -3,6 +3,12 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Category;
+use App\Models\Organization;
+use App\Models\Event;
+use App\Models\Bookmark;
+use App\Models\Review;
+use App\Models\Comment;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,11 +21,31 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Create specific categories
+        $categories = ['Kompetisi', 'Seminar', 'Workshop', 'Open Recruitment', 'Lomba', 'Webinar'];
+        foreach ($categories as $category) {
+            Category::factory()->create([
+                'name' => $category,
+                'slug' => \Illuminate\Support\Str::slug($category),
+            ]);
+        }
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Create Users
+        $users = User::factory(10)->create();
+
+        // Create Organizations
+        $organizations = Organization::factory(5)->create();
+
+        // Create Events
+        $events = Event::factory(20)
+            ->recycle(Category::all())
+            ->recycle($organizations)
+            ->recycle($users)
+            ->create();
+
+        // Create Bookmarks, Reviews, Comments
+        Bookmark::factory(10)->recycle($users)->recycle($events)->create();
+        Review::factory(10)->recycle($users)->recycle($events)->create();
+        Comment::factory(10)->recycle($users)->recycle($events)->create();
     }
 }
