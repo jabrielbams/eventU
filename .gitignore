@@ -1,4 +1,5 @@
 *.log
+.agent
 .DS_Store
 .env
 .env.backup
