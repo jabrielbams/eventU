@@ -3,7 +3,19 @@
 @section('title', 'Join the Movement')
 
 @section('content')
-<div class="flex justify-center items-center py-10 w-full">
+<div class="flex justify-center items-center py-10 w-full relative">
+    
+    <!-- Success Modal (Hidden by default) -->
+    <div id="successModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div class="neo-box bg-green-400 p-8 max-w-sm w-full relative animate-bounce-in">
+            <h2 class="text-3xl font-black uppercase text-telkom-black mb-4">Success!</h2>
+            <p class="font-bold text-lg mb-6">Account created successfully.</p>
+            <button onclick="window.location.reload()" class="neo-button w-full bg-white text-telkom-black hover:bg-gray-100">
+                Continue
+            </button>
+        </div>
+    </div>
+
     <div class="w-full max-w-md">
         <!-- Header -->
         <div class="mb-8 text-center">
@@ -18,29 +30,24 @@
             <!-- Decorative Shape -->
             <div class="absolute -top-10 -right-10 w-24 h-24 bg-telkom-red rounded-full border-4 border-telkom-black z-0"></div>
 
-            <form action="{{ route('register.post') }}" method="POST" class="relative z-10 space-y-6">
-                @csrf
-
+            <form id="registerForm" class="relative z-10 space-y-6">
+                
                 <!-- Name -->
                 <div>
                     <label for="name" class="block text-lg font-bold mb-2 uppercase tracking-wide">Full Name</label>
-                    <input type="text" name="name" id="name" value="{{ old('name') }}" 
-                        class="neo-input focus:ring-0 @error('name') border-red-500 @enderror" 
+                    <input type="text" name="name" id="name" 
+                        class="neo-input focus:ring-0" 
                         placeholder="John Doe">
-                    @error('name')
-                        <p class="text-telkom-red font-bold text-sm mt-1 bg-black text-white inline-block px-1">{{ $message }}</p>
-                    @enderror
+                    <p id="error-name" class="hidden text-telkom-red font-bold text-sm mt-1 bg-black text-white px-1"></p>
                 </div>
 
                 <!-- Email -->
                 <div>
                     <label for="email" class="block text-lg font-bold mb-2 uppercase tracking-wide">University Email</label>
-                    <input type="email" name="email" id="email" value="{{ old('email') }}" 
-                        class="neo-input focus:ring-0 @error('email') border-red-500 @enderror" 
+                    <input type="email" name="email" id="email" 
+                        class="neo-input focus:ring-0" 
                         placeholder="student@telkomuniversity.ac.id">
-                    @error('email')
-                         <p class="text-telkom-red font-bold text-sm mt-1 bg-black text-white inline-block px-1">{{ $message }}</p>
-                    @enderror
+                    <p id="error-email" class="hidden text-telkom-red font-bold text-sm mt-1 bg-black text-white px-1"></p>
                 </div>
 
                 <!-- Role Selection -->
@@ -48,21 +55,19 @@
                     <label class="block text-lg font-bold mb-2 uppercase tracking-wide">I am a...</label>
                     <div class="grid grid-cols-2 gap-4">
                         <label class="cursor-pointer">
-                            <input type="radio" name="role" value="student" class="peer sr-only" {{ old('role') == 'student' ? 'checked' : '' }}>
+                            <input type="radio" name="role" value="student" class="peer sr-only" checked>
                             <div class="neo-box p-3 text-center hover:bg-gray-100 peer-checked:bg-telkom-black peer-checked:text-white transition-all">
                                 Student
                             </div>
                         </label>
                         <label class="cursor-pointer">
-                            <input type="radio" name="role" value="organizer" class="peer sr-only" {{ old('role') == 'organizer' ? 'checked' : '' }}>
+                            <input type="radio" name="role" value="organizer" class="peer sr-only">
                             <div class="neo-box p-3 text-center hover:bg-gray-100 peer-checked:bg-telkom-black peer-checked:text-white transition-all">
                                 Organizer
                             </div>
                         </label>
                     </div>
-                    @error('role')
-                         <p class="text-telkom-red font-bold text-sm mt-1 bg-black text-white inline-block px-1">{{ $message }}</p>
-                    @enderror
+                    <p id="error-role" class="hidden text-telkom-red font-bold text-sm mt-1 bg-black text-white px-1"></p>
                 </div>
 
                 <!-- Password -->
@@ -71,9 +76,7 @@
                     <input type="password" name="password" id="password" 
                         class="neo-input focus:ring-0" 
                         placeholder="********">
-                    @error('password')
-                         <p class="text-telkom-red font-bold text-sm mt-1 bg-black text-white inline-block px-1">{{ $message }}</p>
-                    @enderror
+                    <p id="error-password" class="hidden text-telkom-red font-bold text-sm mt-1 bg-black text-white px-1"></p>
                 </div>
 
                 <!-- Confirm Password -->
@@ -85,7 +88,7 @@
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="w-full neo-button text-xl tracking-widest mt-4">
+                <button type="submit" id="submitBtn" class="w-full neo-button text-xl tracking-widest mt-4 disabled:opacity-50 disabled:cursor-not-allowed">
                     Register Access
                 </button>
                 
@@ -96,4 +99,68 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Clear previous errors
+        document.querySelectorAll('[id^="error-"]').forEach(el => {
+            el.classList.add('hidden');
+            el.innerText = '';
+        });
+
+        // UI Loading State
+        const submitBtn = document.getElementById('submitBtn');
+        const originalBtnText = submitBtn.innerText;
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Processing...';
+
+        // Gather Data
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+
+        fetch('/api/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (response.status === 201) {
+                return response.json().then(data => {
+                    // Success State
+                    document.getElementById('successModal').classList.remove('hidden');
+                });
+            } else if (response.status === 422) {
+                return response.json().then(data => {
+                    // Validation Errors
+                    Object.keys(data.errors).forEach(field => {
+                        const errorEl = document.getElementById(`error-${field}`);
+                        if (errorEl) {
+                            errorEl.innerText = data.errors[field][0];
+                            errorEl.classList.remove('hidden', 'inline-block');
+                            errorEl.classList.add('inline-block');
+                        }
+                    });
+                });
+            } else {
+                // General Error
+                alert('Something went wrong. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Network error. Please try again.');
+        })
+        .finally(() => {
+            // Reset Button
+            submitBtn.disabled = false;
+            submitBtn.innerText = originalBtnText;
+        });
+    });
+</script>
 @endsection

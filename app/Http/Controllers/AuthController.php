@@ -35,4 +35,34 @@ class AuthController extends Controller
 
         return redirect()->route('register')->with('success', 'Registration successful! Welcome to TelyuEvents.');
     }
+
+    public function registerApi(Request $request)
+    {
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => 'required|in:student,organizer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Account created!',
+            'user' => $user
+        ], 201);
+    }
 }
