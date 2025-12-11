@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Organization extends Model
 {
-    /** @use HasFactory<\Database\Factories\OrganizationFactory> */
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'name',
         'description',
         'email',
@@ -18,6 +18,11 @@ class Organization extends Model
         'address',
         'logo',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function events()
     {

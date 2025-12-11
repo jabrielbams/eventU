@@ -17,6 +17,7 @@ class OrganizationFactory extends Factory
     public function definition(): array
     {
         return [
+            'user_id' => \App\Models\User::factory()->state(['role' => 'organizer']),
             'name' => fake()->company(),
             'description' => fake()->paragraph(),
             'email' => fake()->unique()->companyEmail(),
