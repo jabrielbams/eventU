@@ -27,3 +27,19 @@ Route::get('/events', function () {
 Route::get('/events/{id}', function ($id) {
     return view('events.show', ['id' => $id]);
 })->name('events.show');
+// Organization Profile
+Route::get('/organizations/create', function () {
+    if (auth()->user()->role !== 'organizer') {
+        abort(403, 'Unauthorized action.');
+    }
+    return view('organizations.create');
+})->middleware('auth')->name('organizations.create');
+
+// Internal API route for creating organizations (Using web middleware for Session Auth)
+Route::post('/api/organizations', [\App\Http\Controllers\Api\OrganizationController::class, 'store'])
+    ->middleware('auth')
+    ->name('api.organizations.store');
+
+Route::get('/organizations/{id}', function ($id) {
+    return view('organizations.show', ['id' => $id]);
+})->name('organizations.show');
