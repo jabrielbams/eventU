@@ -32,7 +32,8 @@ Route::get('/events/create', function () {
 })->middleware('auth')->name('events.create');
 
 Route::get('/events/{id}', function ($id) {
-    return view('events.show', ['id' => $id]);
+    $event = \App\Models\Event::findOrFail($id);
+    return view('events.show', ['event' => $event, 'id' => $id]);
 })->name('events.show');
 
 Route::get('/events/{id}/participants', function ($id) {
