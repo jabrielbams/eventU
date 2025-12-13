@@ -47,6 +47,12 @@
             .neo-button:hover {
                 @apply shadow-[2px_2px_0px_0px_#1A1A1A] translate-x-[2px] translate-y-[2px];
             }
+            .neo-button-default {
+                @apply bg-telkom-white text-telkom-black font-bold uppercase py-3 px-6 border-[3px] border-telkom-black shadow-[4px_4px_0px_0px_#1A1A1A];
+            }
+            .neo-button-default:hover {
+                @apply bg-gray-100 shadow-[2px_2px_0px_0px_#1A1A1A] translate-x-[2px] translate-y-[2px];
+            }
             .neo-input {
                 @apply w-full border-[3px] border-telkom-black p-3 font-medium outline-none bg-telkom-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)];
             }
@@ -79,18 +85,26 @@
                 <div class="hidden md:flex space-x-8 items-center">
                     <a href="{{ route('events.index') }}" class="font-bold hover:underline decoration-4 underline-offset-4 decoration-telkom-red">Events</a>
                     <a href="#" class="font-bold hover:underline decoration-4 underline-offset-4 decoration-telkom-red">Competitions</a>
-                    
-                    <!-- Language Toggle -->
-                    <div class="flex items-center space-x-2 border-2 border-telkom-black bg-white px-2 py-1 shadow-[2px_2px_0px_#000]">
-                        <a href="{{ route('lang.switch', 'en') }}" class="{{ app()->getLocale() == 'en' ? 'font-black text-telkom-red' : 'text-gray-500 hover:text-black' }}">EN</a>
-                        <span class="text-telkom-black">|</span>
-                        <a href="{{ route('lang.switch', 'id') }}" class="{{ app()->getLocale() == 'id' ? 'font-black text-telkom-red' : 'text-gray-500 hover:text-black' }}">ID</a>
-                    </div>
+                
 
                     <!-- Auth Buttons -->
-                    <a href="{{ route('register') }}" class="neo-button text-sm">
-                        Join Now
-                    </a>
+                    <!-- Auth Buttons -->
+                    @guest
+                        <a href="{{ route('login') }}" class="neo-button-default text-sm mr-4">Login</a>
+                        <a href="{{ route('register') }}" class="neo-button text-sm">
+                            Join Now
+                        </a>
+                    @endguest
+
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="font-bold hover:underline decoration-4 underline-offset-4 decoration-telkom-red">Dashboard</a>
+                        <form method="POST" action="{{ route('logout') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="neo-button text-sm bg-telkom-black hover:bg-telkom-red">
+                                Logout
+                            </button>
+                        </form>
+                    @endauth
                 </div>
 
                 <!-- Mobile Menu Button (Alpine) -->
@@ -115,7 +129,18 @@
                             <a href="{{ route('lang.switch', 'en') }}" class="{{ app()->getLocale() == 'en' ? 'font-black text-telkom-red' : '' }}">EN</a>
                             <a href="{{ route('lang.switch', 'id') }}" class="{{ app()->getLocale() == 'id' ? 'font-black text-telkom-red' : '' }}">ID</a>
                         </div>
-                        <a href="{{ route('register') }}" class="neo-button text-center">Join Now</a>
+                        @guest
+                            <a href="{{ route('login') }}" class="neo-button-default text-center">Login</a>
+                            <a href="{{ route('register') }}" class="neo-button text-center">Join Now</a>
+                        @endguest
+                        @auth
+                            <a href="{{ route('dashboard') }}" class="font-bold text-center">My Dashboard</a>
+                            <form method="POST" action="{{ route('logout') }}" class="w-full">
+                                @csrf
+                                <button type="submit" class="neo-button text-center w-full bg-telkom-black hover:bg-telkom-red">Logout</button>
+                            </form>
+                        @endauth
+                        
                     </div>
                 </div>
             </div>

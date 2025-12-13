@@ -24,10 +24,10 @@ class DatabaseSeeder extends Seeder
         // Create specific categories
         $categories = ['Kompetisi', 'Seminar', 'Workshop', 'Open Recruitment', 'Lomba', 'Webinar'];
         foreach ($categories as $category) {
-            Category::factory()->create([
-                'name' => $category,
-                'slug' => \Illuminate\Support\Str::slug($category),
-            ]);
+            Category::firstOrCreate(
+                ['slug' => \Illuminate\Support\Str::slug($category)],
+                ['name' => $category, 'description' => 'Description for ' . $category]
+            );
         }
 
         // Create Users

@@ -16,6 +16,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::middleware(['web', 'auth'])->group(function () {
+    Route::post('/events', [\App\Http\Controllers\Api\EventController::class, 'store']);
     Route::post('/events/{id}/register', [EventRegistrationController::class, 'store']);
     Route::get('/events/{id}/status', [EventRegistrationController::class, 'status']);
 });
