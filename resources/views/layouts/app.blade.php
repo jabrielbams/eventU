@@ -98,6 +98,7 @@
 
                     @auth
                         <a href="{{ route('dashboard') }}" class="font-bold hover:underline decoration-4 underline-offset-4 decoration-telkom-red">Dashboard</a>
+                        <a href="{{ route('profile.edit') }}" class="font-bold hover:underline decoration-4 underline-offset-4 decoration-telkom-red ml-4">My Identity</a>
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
                             <button type="submit" class="neo-button text-sm bg-telkom-black hover:bg-telkom-red">
@@ -135,6 +136,7 @@
                         @endguest
                         @auth
                             <a href="{{ route('dashboard') }}" class="font-bold text-center">My Dashboard</a>
+                            <a href="{{ route('profile.edit') }}" class="font-bold text-center">My Identity</a>
                             <form method="POST" action="{{ route('logout') }}" class="w-full">
                                 @csrf
                                 <button type="submit" class="neo-button text-center w-full bg-telkom-black hover:bg-telkom-red">Logout</button>
