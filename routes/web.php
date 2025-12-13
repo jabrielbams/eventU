@@ -18,3 +18,12 @@ Route::get('login', [\App\Http\Controllers\LoginController::class, 'showLogin'])
 Route::get('dashboard', function () {
     return view('dashboard');
 })->name('dashboard')->middleware('auth');
+
+// Event Catalog
+Route::get('/events', function () {
+    return view('events.index');
+})->name('events.index');
+
+Route::get('/events/{id}', function ($id) {
+    return view('events.show', ['id' => $id]);
+})->name('events.show');
