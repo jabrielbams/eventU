@@ -75,7 +75,7 @@
                     <label for="password" class="block text-lg font-bold mb-2 uppercase tracking-wide">Password</label>
                     <input type="password" name="password" id="password" 
                         class="neo-input focus:ring-0" 
-                        placeholder="********">
+                        placeholder="Password">
                     <p id="error-password" class="hidden text-telkom-red font-bold text-sm mt-1 bg-black text-white px-1"></p>
                 </div>
 
@@ -84,7 +84,7 @@
                     <label for="password_confirmation" class="block text-lg font-bold mb-2 uppercase tracking-wide">Confirm Password</label>
                     <input type="password" name="password_confirmation" id="password_confirmation" 
                         class="neo-input focus:ring-0" 
-                        placeholder="********">
+                        placeholder="Password">
                 </div>
 
                 <!-- Submit Button -->
@@ -93,7 +93,7 @@
                 </button>
                 
                 <p class="text-center text-sm font-medium mt-4">
-                    Already have an account? <a href="#" class="underline decoration-2 decoration-telkom-red hover:text-telkom-red">Login Here</a>
+                    Already have an account? <a href="{{ route('login') }}" class="underline decoration-2 decoration-telkom-red hover:text-telkom-red">Login Here</a>
                 </p>
             </form>
         </div>
