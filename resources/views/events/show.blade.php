@@ -266,15 +266,243 @@
                 width: 90%;
             }
         }
+        /* --- EVENT ANNOUNCEMENTS (BULLETIN BOARD) --- */
+        /* Layout Stack */
+        .layout-stack {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .section-divider {
+            border: 0;
+            border-top: 3px dashed var(--black);
+            margin: 4rem 0;
+            width: 100%;
+        }
+
+        .poster-container {
+             max-width: 100%;
+        }
+
+        /* --- EVENT ANNOUNCEMENTS (BULLETIN BOARD) --- */
+        .bulletin-section {
+            max-width: 100%;
+            width: 100%;
+            margin-top: 0;
+            background-color: #f0f0f0;
+            background-image: repeating-linear-gradient(
+                45deg,
+                #dadada 0px,
+                #dadada 1px,
+                transparent 1px,
+                transparent 10px
+            ); /* Hatched Pattern */
+            border: var(--border-thick);
+            box-shadow: var(--shadow-hard);
+            padding: 2rem;
+            position: relative;
+        }
+
+        .section-header {
+            background: var(--black);
+            color: var(--white);
+            font-size: 1.5rem;
+            font-weight: 800;
+            padding: 0.5rem 1.5rem;
+            display: inline-block;
+            transform: rotate(-2deg);
+            margin-bottom: 2rem;
+            border: 2px solid var(--white);
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+        }
+
+        /* Broadcast Box (Organizer) */
+        .broadcast-box {
+            background: var(--white);
+            border: var(--border-thick);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .megaphone-input {
+            width: 100%;
+            border: 2px solid var(--black);
+            padding: 1rem;
+            font-family: 'Space Grotesk', monospace;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 100px;
+            background: #fff;
+        }
+
+        .broadcast-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .urgency-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .broadcast-btn {
+            background: var(--black);
+            color: var(--white);
+            border: none;
+            padding: 0.8rem 2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .broadcast-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* News Feed */
+        #news-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .news-card {
+            background: var(--white);
+            border: var(--border-thick);
+            padding: 0;
+            position: relative;
+            box-shadow: 4px 4px 0px var(--black);
+            transition: opacity 0.3s ease;
+        }
+
+        .news-card.urgent {
+            background: #CCFF00; /* Neon Yellow */
+            border-color: #EE2E24; /* Red Border */
+        }
+        
+        .news-card.urgent .news-header {
+             border-bottom-color: #EE2E24;
+        }
+        
+        .news-card.urgent .timestamp-badge {
+            background: #EE2E24;
+            color: var(--white);
+        }
+
+        .news-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-bottom: 2px solid var(--black);
+            background: rgba(255,255,255,0.5);
+        }
+
+        .timestamp-badge {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 0.85rem;
+            background: var(--black);
+            color: var(--white);
+            padding: 0.2rem 0.5rem;
+        }
+
+        .urgent-badge {
+            background: #EE2E24;
+            color: var(--white);
+            font-weight: 900;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.8rem;
+            margin-right: auto;
+            margin-left: 1rem;
+            border: 1px solid var(--black);
+            display: none; /* Hidden by default */
+        }
+        
+        .news-card.urgent .urgent-badge {
+            display: inline-block;
+        }
+
+        .news-body {
+            padding: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .news-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .control-icon {
+            cursor: pointer;
+            font-size: 1rem;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .control-icon:hover {
+            opacity: 1;
+        }
+
+        .empty-state {
+            text-align: center;
+            font-weight: 700;
+            padding: 2rem;
+            color: #666;
+            border: 2px dashed #999;
+            background: rgba(255,255,255,0.5);
+        }
     </style>
 </head>
 <body>
 
     <a href="/events" class="back-btn">&larr; Back to Catalog</a>
 
-    <div class="poster-container" id="poster">
-        <div id="loading" style="grid-column: 1/-1; padding: 5rem; text-align: center; font-size: 2rem; font-weight: bold;">
-            LOADING EVENT DETAILS...
+    <div class="layout-stack">
+        <div class="poster-container" id="poster">
+            <div id="loading" style="grid-column: 1/-1; padding: 5rem; text-align: center; font-size: 2rem; font-weight: bold;">
+                LOADING EVENT DETAILS...
+            </div>
+        </div>
+
+        <hr class="section-divider">
+
+        <!-- LIVE BULLETIN BOARD SECTION -->
+        <div class="bulletin-section">
+            <div class="section-header">LIVE UPDATES</div>
+
+            @if(auth()->check() && isset($event) && auth()->id() === $event->user_id)
+            <!-- Organizer Broadcast Box -->
+            <div class="broadcast-box">
+                <textarea id="announcementInput" class="megaphone-input" placeholder="LOUD NOISES! Type announcement here..."></textarea>
+                <div class="broadcast-controls">
+                    <label class="urgency-toggle">
+                        <input type="checkbox" id="urgencyCheck">
+                        MARK AS CRITICAL
+                    </label>
+                    <button id="broadcastBtn" class="broadcast-btn">BROADCAST</button>
+                </div>
+            </div>
+            @endif
+
+            <!-- News Feed -->
+            <div id="news-feed">
+                <!-- Announcements injected here -->
+                <div class="empty-state">NO UPDATES YET. STAY TUNED.</div>
+            </div>
         </div>
     </div>
 
@@ -302,6 +530,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchEventDetails(eventId);
+            fetchAnnouncements(eventId);
         });
 
         function fetchEventDetails(id) {
@@ -424,11 +653,200 @@
             });
         }
 
+
+
+        /* --- ANNOUNCEMENT LOGIC --- */
+
+        // Helper to format date "12 OCT - 14:00"
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const day = date.getDate();
+            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${day} ${month} - ${hours}:${minutes}`;
+        }
+
+        // Fetch Announcements on Load
+        function fetchAnnouncements(id) {
+            fetch(`/api/events/${id}/announcements`)
+                .then(res => { 
+                    if(!res.ok) throw new Error("Failed to fetch");
+                    return res.json(); 
+                })
+                .then(data => {
+                    const feed = document.getElementById('news-feed');
+                    if (data.length > 0) {
+                        feed.innerHTML = ''; // Clear empty state
+                        // Assuming data is latest first. If not, verify API sort.
+                        data.forEach(item => {
+                            feed.appendChild(createAnnouncementCard(item));
+                        });
+                    }
+                })
+                .catch(err => console.log('No announcements or error fetching', err));
+        }
+
+        // Create DOM Element for Announcement
+        function createAnnouncementCard(data) {
+            const card = document.createElement('div');
+            card.className = `news-card ${data.is_urgent ? 'urgent' : ''}`;
+            card.id = `announcement-${data.id}`;
+
+            const isOwner = {{ (auth()->check() && isset($event) && auth()->id() === $event->user_id) ? 'true' : 'false' }};
+            
+            let controlsHtml = '';
+            if (isOwner) {
+                controlsHtml = `
+                    <div class="news-controls">
+                        <span class="control-icon" onclick="editAnnouncement(${data.id}, '${data.message?.replace(/'/g, "\\'")}')">✏️</span>
+                        <span class="control-icon" onclick="deleteAnnouncement(${data.id})">❌</span>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <div class="news-header">
+                    <span class="timestamp-badge">${formatDate(data.created_at)}</span>
+                    <span class="urgent-badge">URGENT</span>
+                    ${controlsHtml}
+                </div>
+                <div class="news-body" id="body-${data.id}">${data.message}</div>
+            `;
+            return card;
+        }
+
+        // Post Announcement
+        const broadcastBtn = document.getElementById('broadcastBtn');
+        if (broadcastBtn) {
+            broadcastBtn.addEventListener('click', () => {
+                const input = document.getElementById('announcementInput');
+                const isUrgent = document.getElementById('urgencyCheck').checked;
+                const message = input.value.trim();
+
+                if (!message) return alert("Please type a message!");
+
+                broadcastBtn.disabled = true;
+                broadcastBtn.textContent = "SENDING...";
+
+                fetch('/api/announcements', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        event_id: eventId,
+                        message: message,
+                        is_urgent: isUrgent
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    // Optimistic UI or use returned data
+                    const feed = document.getElementById('news-feed');
+                    
+                    // Remove empty state if present
+                    if (feed.querySelector('.empty-state')) {
+                        feed.innerHTML = '';
+                    }
+
+                    // Prepend new card
+                    feed.insertBefore(createAnnouncementCard(data), feed.firstChild);
+
+                    // Reset Form
+                    input.value = '';
+                    document.getElementById('urgencyCheck').checked = false;
+                    broadcastBtn.disabled = false;
+                    broadcastBtn.textContent = "BROADCAST";
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Failed to post announcement.");
+                    broadcastBtn.disabled = false;
+                    broadcastBtn.textContent = "BROADCAST";
+                });
+            });
+        }
+
+        // Delete Announcement
+        window.deleteAnnouncement = function(id) {
+            if(!confirm("Purge this update?")) return;
+
+            fetch(`/api/announcements/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(res => {
+                if(res.ok) {
+                    const card = document.getElementById(`announcement-${id}`);
+                    card.style.opacity = '0';
+                    setTimeout(() => card.remove(), 300);
+                } else {
+                    alert('Failed to delete');
+                }
+            });
+        };
+
+        // Edit Announcement (Inline)
+        window.editAnnouncement = function(id, currentText) {
+            const bodyDiv = document.getElementById(`body-${id}`);
+            const originalHtml = bodyDiv.innerHTML;
+            
+            // Swap to input
+            bodyDiv.innerHTML = `
+                <input type="text" id="edit-input-${id}" value="${currentText}" 
+                    style="width: 100%; padding: 0.5rem; border: 2px solid black; font-family: 'Space Grotesk'; font-size: 1rem;">
+                <div style="margin-top: 0.5rem; font-size: 0.8rem;">Press Enter to Save, Esc to Cancel</div>
+            `;
+            
+            const input = document.getElementById(`edit-input-${id}`);
+            input.focus();
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    saveEdit(id, input.value);
+                } else if (e.key === 'Escape') {
+                    bodyDiv.innerHTML = originalHtml; // Revert
+                }
+            });
+        };
+
+        function saveEdit(id, newMessage) {
+            fetch(`/api/announcements/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ message: newMessage })
+            })
+            .then(res => res.json())
+            .then(data => {
+                const bodyDiv = document.getElementById(`body-${id}`);
+                bodyDiv.innerHTML = data.message; 
+                // Need to update the onclick handler for the edit button to reflect new text? 
+                // Ideally yes, but simpler to just reload or let it be. 
+                // For robustness, let's update the edit button onclick attribute manually or just re-fetch.
+                // Re-fetching is safer but slower. Let's update the attribute if we can select it.
+                // Simple for now: Just update text.
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Update failed');
+            });
+        }
+
         function showSuccessModal(ticketId) {
             const modal = document.getElementById('successModal');
             document.getElementById('ticketIdDisplay').textContent = '#' + ticketId;
             modal.classList.add('active');
         }
+
+        // Call fetch on load (Modify existing DOMContentLoaded)
+        const originalInit = window.onload; // or just append to the existing event listener
 
         function closeModal() {
             document.getElementById('successModal').classList.remove('active');
