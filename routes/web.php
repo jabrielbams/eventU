@@ -35,6 +35,7 @@ Route::get('/events/{id}', function ($id) {
     return view('events.show', ['id' => $id]);
 })->name('events.show');
 
+
 // Organization Profile
 Route::get('/organizations/create', function () {
     if (auth()->user()->role !== 'organizer') {
@@ -42,6 +43,13 @@ Route::get('/organizations/create', function () {
     }
     return view('organizations.create');
 })->middleware('auth')->name('organizations.create');
+
+// User Profile
+Route::middleware('auth')->group(function () {
+    Route::get('/profile/edit', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/update', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+});
+
 
 // Internal API route for creating organizations (Using web middleware for Session Auth)
 Route::post('/api/organizations', [\App\Http\Controllers\Api\OrganizationController::class, 'store'])
