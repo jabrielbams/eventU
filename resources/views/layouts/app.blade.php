@@ -126,6 +126,10 @@
                          class="absolute top-20 right-0 w-full bg-telkom-white border-b-4 border-telkom-black p-4 shadow-lg flex flex-col space-y-4">
                         <a href="#" class="font-bold text-lg">Events</a>
                         <a href="#" class="font-bold text-lg">Competitions</a>
+                        <div class="flex space-x-4">
+                            <a href="{{ route('lang.switch', 'en') }}" class="{{ app()->getLocale() == 'en' ? 'font-black text-telkom-red' : '' }}">EN</a>
+                            <a href="{{ route('lang.switch', 'id') }}" class="{{ app()->getLocale() == 'id' ? 'font-black text-telkom-red' : '' }}">ID</a>
+                        </div>
                         @guest
                             <a href="{{ route('login') }}" class="neo-button-default text-center">Login</a>
                             <a href="{{ route('register') }}" class="neo-button text-center">Join Now</a>
