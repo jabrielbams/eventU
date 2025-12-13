@@ -15,6 +15,14 @@ Route::post('register', [\App\Http\Controllers\AuthController::class, 'register'
 
 Route::get('login', [\App\Http\Controllers\LoginController::class, 'showLogin'])->name('login');
 
+Route::get('/events', function () {
+    return view('events.index');
+})->name('events.index');
+
+Route::get('/events/{id}', function ($id) {
+    return view('events.show', ['id' => $id]);
+})->name('events.show');
+
 Route::get('dashboard', function () {
     return view('dashboard');
 })->name('dashboard')->middleware('auth');

@@ -7,59 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
 {
-    /** @use HasFactory<\Database\Factories\EventFactory> */
     use HasFactory;
 
-    protected $table = 'event';
+    protected $table = 'events';
 
     protected $fillable = [
         'title',
         'description',
-        'event_date',
-        'event_time',
-        'location',
-        'category_id',
-        'organization_id',
-        'user_id',
-        'banner',
-        'status',
-        'is_online',
-        'registration_link',
+        'date',
+        'category',
+        'image_url',
+        'organizer',
     ];
 
     protected $casts = [
-        'event_date' => 'date',
-        'event_time' => 'datetime',
-        'is_online' => 'boolean',
+        'date' => 'datetime',
     ];
-
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
-
-    public function organization()
-    {
-        return $this->belongsTo(Organization::class);
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function bookmarks()
-    {
-        return $this->hasMany(Bookmark::class);
-    }
-
-    public function reviews()
-    {
-        return $this->hasMany(Review::class);
-    }
-
-    public function comments()
-    {
-        return $this->hasMany(Comment::class);
-    }
 }

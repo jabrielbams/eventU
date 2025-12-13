@@ -22,30 +22,28 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Create specific categories
-        $categories = ['Kompetisi', 'Seminar', 'Workshop', 'Open Recruitment', 'Lomba', 'Webinar'];
-        foreach ($categories as $category) {
-            Category::factory()->create([
-                'name' => $category,
-                'slug' => \Illuminate\Support\Str::slug($category),
-            ]);
-        }
+        // $categories = ['Kompetisi', 'Seminar', 'Workshop', 'Open Recruitment', 'Lomba', 'Webinar'];
+        // foreach ($categories as $category) {
+        //     Category::factory()->create([
+        //         'name' => $category,
+        //         'slug' => \Illuminate\Support\Str::slug($category),
+        //     ]);
+        // }
 
         // Create Users
-        $users = User::factory(10)->create();
+        // $users = User::factory(10)->create();
 
         // Create Organizations
-        $organizations = Organization::factory(5)->create();
+        // $organizations = Organization::factory(5)->create();
 
-        // Create Events
-        $events = Event::factory(20)
-            ->recycle(Category::all())
-            ->recycle($organizations)
-            ->recycle($users)
-            ->create();
+        // Run Event Seeder (New Implementation)
+        $this->call([
+            EventSeeder::class,
+        ]);
 
-        // Create Bookmarks, Reviews, Comments
-        Bookmark::factory(10)->recycle($users)->recycle($events)->create();
-        Review::factory(10)->recycle($users)->recycle($events)->create();
-        Comment::factory(10)->recycle($users)->recycle($events)->create();
+        // Create Bookmarks, Reviews, Comments (Commented out as they rely on old schema)
+        // Bookmark::factory(10)->recycle($users)->recycle($events)->create();
+        // Review::factory(10)->recycle($users)->recycle($events)->create();
+        // Comment::factory(10)->recycle($users)->recycle($events)->create();
     }
 }

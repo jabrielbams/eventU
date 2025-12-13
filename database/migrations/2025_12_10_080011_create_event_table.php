@@ -11,20 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('event', function (Blueprint $table) {
+        Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->date('event_date');
-            $table->time('event_time');
-            $table->string('location');
-            $table->foreignId('category_id')->constrained('category')->onDelete('cascade');
-            $table->foreignId('organization_id')->constrained('organizations')->onDelete('cascade');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('banner')->nullable();
-            $table->enum('status', ['draft', 'published', 'cancelled', 'completed'])->default('draft');
-            $table->boolean('is_online')->default(false);
-            $table->string('registration_link')->nullable();
+            $table->dateTime('date');
+            $table->string('category'); // e.g., 'workshop', 'seminar'
+            $table->string('image_url');
+            $table->string('organizer');
             $table->timestamps();
         });
     }
@@ -34,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('event');
+        Schema::dropIfExists('events');
     }
 };

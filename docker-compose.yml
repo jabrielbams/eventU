@@ -43,5 +43,6 @@ services:
 networks:
   laravel:
 
+
 volumes:
   mysql_data:
