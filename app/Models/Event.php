@@ -58,6 +58,11 @@ class Event extends Model
         return $this->hasMany(Review::class);
     }
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class)->withTimestamps();
+    }
+
     public function comments()
     {
         return $this->hasMany(Comment::class);
