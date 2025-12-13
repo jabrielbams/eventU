@@ -1,27 +1,23 @@
 <?php
 
+use App\Http\Controllers\Api\EventController;
+use App\Http\Controllers\Api\OrganizationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\EventRegistrationController; // Added this line
+use App\Http\Middleware\CheckUserRole;
 
-Route::post('/register', [\App\Http\Controllers\AuthController::class, 'registerApi']);
+// Public API - Get events list and details
+Route::get('/events', [EventController::class, 'index']);
+Route::get('/events/{id}', [EventController::class, 'show']);
 
-Route::middleware('web')->group(function () {
-    Route::post('/login', [\App\Http\Controllers\LoginController::class, 'login']);
+// Protected API routes
+Route::middleware('auth:sanctum')->group(function () {
+
+    // Organizer-only API routes
+    Route::middleware(CheckUserRole::class.':organizer')->group(function () {
+        // Event CRUD
+        Route::post('/events', [EventController::class, 'store']);
+        Route::put('/events/{id}', [EventController::class, 'update']);
+        Route::delete('/events/{id}', [EventController::class, 'destroy']);
+    });
 });
-
-// Added API routes for event registration
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-
-Route::middleware(['web', 'auth'])->group(function () {
-    Route::post('/events', [\App\Http\Controllers\Api\EventController::class, 'store']);
-    Route::post('/events/{id}/register', [EventRegistrationController::class, 'store']);
-    Route::get('/events/{id}/status', [EventRegistrationController::class, 'status']);
-});
-
-Route::get('/organizations/{id}', [\App\Http\Controllers\Api\OrganizationController::class, 'show']);
-
-Route::get('/events', [\App\Http\Controllers\Api\EventController::class, 'index']);
-Route::get('/events/{id}', [\App\Http\Controllers\Api\EventController::class, 'show']);
