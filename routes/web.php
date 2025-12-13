@@ -35,6 +35,10 @@ Route::get('/events/{id}', function ($id) {
     return view('events.show', ['id' => $id]);
 })->name('events.show');
 
+Route::get('/events/{id}/participants', function ($id) {
+    return view('events.participants', ['id' => $id]);
+})->middleware('auth')->name('events.participants');
+
 Route::get('/events/{id}/edit', function ($id) {
     $categories = \App\Models\Category::all();
     return view('events.edit', compact('categories', 'id'));
