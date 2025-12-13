@@ -15,21 +15,21 @@ class Event extends Model
     protected $fillable = [
         'title',
         'description',
-        'event_date',
-        'event_time',
+        'date',
+        'time',
         'location',
         'category_id',
         'organization_id',
         'user_id',
-        'banner',
+        'image',
         'status',
         'is_online',
         'registration_link',
     ];
 
     protected $casts = [
-        'event_date' => 'date',
-        'event_time' => 'datetime',
+        'date' => 'date',
+        'time' => 'datetime',
         'is_online' => 'boolean',
     ];
 
@@ -56,6 +56,11 @@ class Event extends Model
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class)->withTimestamps();
     }
 
     public function comments()
