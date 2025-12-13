@@ -77,7 +77,7 @@
 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex space-x-8 items-center">
-                    <a href="#" class="font-bold hover:underline decoration-4 underline-offset-4 decoration-telkom-red">Events</a>
+                    <a href="{{ route('events.index') }}" class="font-bold hover:underline decoration-4 underline-offset-4 decoration-telkom-red">Events</a>
                     <a href="#" class="font-bold hover:underline decoration-4 underline-offset-4 decoration-telkom-red">Competitions</a>
                     
                     <!-- Language Toggle -->

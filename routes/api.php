@@ -8,3 +8,6 @@ Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register
 Route::middleware('web')->group(function () {
     Route::post('/login', [\App\Http\Controllers\LoginController::class, 'login']);
 });
+
+Route::get('/events', [\App\Http\Controllers\Api\EventController::class, 'index']);
+Route::get('/events/{id}', [\App\Http\Controllers\Api\EventController::class, 'show']);

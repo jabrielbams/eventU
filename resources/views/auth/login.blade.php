@@ -39,7 +39,7 @@
                     <label for="password" class="block text-lg font-bold mb-2 uppercase tracking-wide">Password</label>
                     <input type="password" name="password" id="password" 
                         class="neo-input focus:ring-0" 
-                        placeholder="********">
+                        placeholder="Password">
                     <p id="error-password" class="hidden text-telkom-red font-bold text-sm mt-1 bg-black text-white px-1"></p>
                 </div>
 
