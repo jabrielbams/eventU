@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TelyuEvents - Pusat Kegiatan Mahasiswa</title>
+    <title>EventU - Pusat Kegiatan Mahasiswa</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;900&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -199,10 +199,10 @@
     <footer class="bg-black text-white py-12 border-t-[3px] border-black mt-12">
         <div class="max-w-7xl mx-auto px-6 text-center">
             <div class="mb-4">
-                <h2 class="text-3xl font-black uppercase tracking-widest text-[#ED1C24]">TELYUEVENTS</h2>
+                <h2 class="text-3xl font-black uppercase tracking-widest text-[#ED1C24]">EventU</h2>
             </div>
             <p class="font-bold uppercase tracking-wider text-sm">
-                © 2025 TelyuEvents. Dibuat oleh Mahasiswa, untuk Mahasiswa.
+                © 2025 EventU. Dibuat oleh Mahasiswa, untuk Mahasiswa.
             </p>
         </div>
     </footer>

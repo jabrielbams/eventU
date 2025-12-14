@@ -224,7 +224,7 @@
                                     <td class="p-4 border-b-[2px] border-black">
                                         @if($user->isStudent())
                                             <span class="inline-block px-3 py-2 border-[2px] border-green-600 bg-green-100 text-green-800 text-xs uppercase font-black shadow-[2px_2px_0px_0px_#000]">
-                                                ✓ Registered
+                                                Terdaftar
                                             </span>
                                         @else
                                             <span class="inline-block px-3 py-2 border-[2px] border-black bg-white text-xs uppercase font-black shadow-[2px_2px_0px_0px_#000]">

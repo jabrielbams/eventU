@@ -30,12 +30,8 @@
 
                         <div class="flex flex-col items-end gap-2">
                             <div class="font-mono font-bold text-sm">
-                                TOTAL OPS: {{ is_countable($registrants) ? count($registrants) : 0 }}
+                                TOTAL PESERTA: {{ is_countable($registrants) ? count($registrants) : 0 }}
                             </div>
-                            <a href="{{ route('events.show', $event->id) }}"
-                                class="font-bold border-[3px] border-black px-4 py-2 hover:bg-[#CCFF00] hover:shadow-[4px_4px_0px_0px_black] transition-all uppercase text-sm">
-                                &larr; KEMBALI KE MARKAS
-                            </a>
                         </div>
                     </div>
 
@@ -173,7 +169,7 @@
                                 </svg>
                             </div>
                             <h3 class="text-2xl font-black uppercase text-gray-400 mb-2">BELUM ADA PESERTA</h3>
-                            <p class="text-gray-500 font-mono">Belum ada data personel yang masuk untuk event ini.</p>
+                            <p class="text-gray-500 font-mono">Belum ada peserta yang mendaftar untuk event ini.</p>
                         </div>
                     @endif
 

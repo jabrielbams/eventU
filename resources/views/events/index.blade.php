@@ -142,7 +142,7 @@
                         <div class="flex border-t-[3px] border-black">
                             <a href="{{ route('events.show', $event['id']) }}"
                                 class="flex-grow bg-industrial-black text-white p-4 text-center text-lg font-black uppercase hover:bg-industrial-red hover:text-white transition-colors">
-                                View Details &rarr;
+                                Lihat Detail &rarr;
                             </a>
 
                             <!-- Bookmark Button (only for students) -->
@@ -173,6 +173,23 @@
                                         </button>
                                     </form>
                                 @endif
+                            @endif
+
+                            <!-- Delete Button (only for organizers) -->
+                            @if (Auth::check() && Auth::user()->isOrganizer())
+                                <form method="POST" action="{{ route('events.destroy', $event['id']) }}" class="border-l-[3px] border-black"
+                                      onsubmit="return confirm('Yakin ingin menghapus event ini?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                            class="h-full bg-white text-industrial-red px-6 shadow-[4px_4px_0px_0px_#000] hover:bg-industrial-red hover:text-white transition-all font-black uppercase text-sm"
+                                            title="Hapus Event">
+                                        <svg class="w-5 h-5 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                        Hapus
+                                    </button>
+                                </form>
                             @endif
                         </div>
                     </div>

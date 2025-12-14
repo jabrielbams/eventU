@@ -4,18 +4,6 @@
 
 @section('content')
 <div class="max-w-[1400px] mx-auto">
-    <!-- Flash Messages -->
-    @if(session('success'))
-        <div class="fixed top-24 right-4 z-50 bg-yellow-300 border-[3px] border-black shadow-[4px_4px_0px_#000] p-4 font-bold uppercase max-w-md">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="fixed top-24 right-4 z-50 bg-industrial-red text-white border-[3px] border-black shadow-[4px_4px_0px_#000] p-4 font-bold uppercase max-w-md">
-            {{ session('error') }}
-        </div>
-    @endif
 
     <!-- Header -->
     <div class="bg-white border-[3px] border-black shadow-[8px_8px_0px_#000] p-8 mb-8 flex flex-wrap justify-between items-center gap-4 relative">
@@ -146,6 +134,37 @@
                                class="flex-1 md:flex-none px-4 py-3 bg-white text-black border-[3px] border-black font-black uppercase text-center transition-all hover:bg-black hover:text-white hover:-translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#000] text-sm">
                                 Edit
                             </a>
+
+                            <!-- Status Change Dropdown -->
+                            <form action="{{ route('events.updateStatus', $event->id) }}" method="POST" class="flex-1 md:flex-none">
+                                @csrf
+                                @method('PATCH')
+                                <select name="status" onchange="this.form.submit()"
+                                    class="w-full px-3 py-3 border-[3px] border-black font-bold uppercase text-xs cursor-pointer transition-all hover:shadow-[4px_4px_0px_0px_#000] bg-white
+                                    @if($event->status === 'published') text-green-700
+                                    @elseif($event->status === 'draft') text-yellow-700
+                                    @elseif($event->status === 'cancelled') text-red-700
+                                    @else text-gray-700
+                                    @endif">
+                                    <option value="draft" {{ $event->status === 'draft' ? 'selected' : '' }}>DRAFT</option>
+                                    <option value="published" {{ $event->status === 'published' ? 'selected' : '' }}>PUBLISHED</option>
+                                    <option value="cancelled" {{ $event->status === 'cancelled' ? 'selected' : '' }}>DIBATALKAN</option>
+                                    <option value="completed" {{ $event->status === 'completed' ? 'selected' : '' }}>SELESAI</option>
+                                </select>
+                            </form>
+
+                            <!-- Hapus Button -->
+                            <form action="{{ route('events.destroy', $event->id) }}" method="POST" class="flex-1 md:flex-none" onsubmit="return confirm('Yakin ingin menghapus event ini?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    class="w-full px-4 py-3 bg-white text-industrial-red border-[3px] border-black font-black uppercase text-center transition-all hover:bg-industrial-red hover:text-white hover:-translate-y-[2px] hover:shadow-[4px_4px_0px_0px_#000] text-sm flex items-center justify-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                    Hapus
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

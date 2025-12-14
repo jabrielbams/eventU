@@ -4,18 +4,6 @@
 
 @section('content')
 <div class="py-10 px-4">
-    <!-- Flash Messages -->
-    @if(session('success'))
-        <div class="fixed top-24 right-4 z-50 neo-box bg-yellow-300 p-4 font-bold uppercase max-w-md">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="fixed top-24 right-4 z-50 neo-box bg-telkom-red text-white p-4 font-bold uppercase max-w-md">
-            {{ session('error') }}
-        </div>
-    @endif
 
     <!-- Back Button -->
     <div class="max-w-6xl mx-auto mb-8">

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>TelyuEvents - @yield('title', 'Dashboard')</title>
+    <title>EventU - @yield('title', 'Dashboard')</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -103,6 +103,9 @@
         <div class="ml-[280px] p-12 w-[calc(100%-280px)]">
             @yield('content')
         </div>
+
+        <!-- Toast Notifications -->
+        @include('components.toast')
     </div>
 
 </body>

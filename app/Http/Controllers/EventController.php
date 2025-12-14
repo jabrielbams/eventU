@@ -150,6 +150,30 @@ class EventController extends Controller
         }
     }
 
+        /**
+     * Remove the specified event from storage.
+     */
+    public function destroy($id)
+    {
+        try {
+            $event = Event::findOrFail($id);
+            $user = Auth::user();
+
+            if ($event->user_id !== $user->id) {
+                return redirect()->back()
+                    ->with('error', 'Unauthorized: Anda tidak memiliki akses untuk menghapus event ini.');
+            }
+
+            $event->delete();
+
+            return redirect()->route('organizer.events')
+                ->with('success', 'Event berhasil dihapus.');
+        } catch (Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
     /**
      * Display event registrants for organizers.
      */
@@ -337,6 +361,37 @@ class EventController extends Controller
 
             return redirect()->back()
                 ->with('error', 'Gagal menghapus bookmark');
+
+        } catch (Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Update event status.
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        try {
+            $event = Event::findOrFail($id);
+            $user = Auth::user();
+
+            // Check if user owns this event
+            if ($event->user_id !== $user->id) {
+                return redirect()->back()
+                    ->with('error', 'Unauthorized: Anda tidak memiliki akses untuk mengubah status event ini.');
+            }
+
+            $request->validate([
+                'status' => 'required|in:draft,published,cancelled,completed',
+            ]);
+
+            $event->status = $request->status;
+            $event->save();
+
+            return redirect()->back()
+                ->with('success', 'Status event berhasil diubah menjadi ' . strtoupper($request->status));
 
         } catch (Exception $e) {
             return redirect()->back()
