@@ -16,10 +16,16 @@
             {{-- Header: Title Bar --}}
             <div class="bg-black text-white p-6 border-b-[3px] border-black flex justify-between items-center">
                 <h1 class="text-3xl font-black uppercase leading-none tracking-tighter">EDIT EVENT</h1>
-                <a href="{{ route('organizer.events') }}"
-                   class="px-4 py-2 bg-white text-black border-[2px] border-white font-bold uppercase text-sm hover:bg-[#CCFF00] hover:border-black transition-all">
-                    &larr; KEMBALI
-                </a>
+                <div class="flex gap-2">
+                    <a href="{{ route('announcements.index', ['event' => $event->id]) }}"
+                       class="px-4 py-2 bg-industrial-red text-white border-[2px] border-black font-bold uppercase text-sm hover:bg-white hover:text-industrial-red transition-all">
+                        Pengumuman Event
+                    </a>
+                    <a href="{{ route('organizer.events') }}"
+                       class="px-4 py-2 bg-white text-black border-[2px] border-white font-bold uppercase text-sm hover:bg-[#CCFF00] hover:border-black transition-all">
+                        &larr; KEMBALI
+                    </a>
+                </div>
             </div>
 
             <form action="{{ route('events.update', $event->id) }}" method="POST" id="edit-event-form"

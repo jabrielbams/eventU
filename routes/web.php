@@ -38,6 +38,13 @@ Route::middleware(AuthenticateWithToken::class)->group(function () {
 
     // Organizer-only routes
     Route::middleware(CheckUserRole::class.':organizer')->group(function () {
+            // Announcement CRUD (organizer)
+            Route::get('/announcements', [\App\Http\Controllers\AnnouncementController::class, 'index'])->name('announcements.index');
+            Route::get('/announcements/create', [\App\Http\Controllers\AnnouncementController::class, 'create'])->name('announcements.create');
+            Route::post('/announcements', [\App\Http\Controllers\AnnouncementController::class, 'store'])->name('announcements.store');
+            Route::get('/announcements/{id}/edit', [\App\Http\Controllers\AnnouncementController::class, 'edit'])->name('announcements.edit');
+            Route::put('/announcements/{id}', [\App\Http\Controllers\AnnouncementController::class, 'update'])->name('announcements.update');
+            Route::delete('/announcements/{id}', [\App\Http\Controllers\AnnouncementController::class, 'destroy'])->name('announcements.destroy');
         Route::get('/organizer/events', [EventController::class, 'organizerEvents'])->name('organizer.events');
 
         Route::post('/events', [EventController::class, 'store'])->name('events.store');
@@ -79,6 +86,8 @@ Route::middleware(AuthenticateWithToken::class)->group(function () {
 
     // Student-only routes
     Route::middleware(CheckUserRole::class.':student')->group(function () {
+            // Student: View announcements for registered events
+            Route::get('/my-announcements', [\App\Http\Controllers\AnnouncementController::class, 'studentIndex'])->name('announcements.student');
         // Bookmark routes
         Route::post('/events/{id}/bookmark', [EventController::class, 'bookmarkEvent'])->name('events.bookmark');
         Route::delete('/events/{id}/bookmark', [EventController::class, 'unbookmarkEvent'])->name('events.unbookmark');

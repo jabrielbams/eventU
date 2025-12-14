@@ -48,7 +48,7 @@
             </div>
         </div>
 
-        <!-- MODULE B: NEXT EVENT -->
+        <!-- MODULE B: NEXT EVENT / ANNOUNCEMENTS (Organizer) -->
         @if($user->isStudent())
             <div
                 class="col-span-1 bg-white border-[3px] border-black shadow-[8px_8px_0px_#000] relative p-6 flex flex-col justify-between">
@@ -76,6 +76,21 @@
                             <div class="text-[0.8rem] font-bold uppercase tracking-widest text-gray-500">Gabung ke event untuk melihatnya di sini</div>
                         </div>
                     @endif
+                </div>
+            </div>
+        @elseif($user->isOrganizer())
+            <div class="col-span-3 bg-white border-[3px] border-black shadow-[8px_8px_0px_#000] relative p-6 flex flex-col justify-between">
+                <!-- Announcement Banner -->
+                <div class="absolute top-0 left-0 right-0 h-6 border-b-[3px] border-black bg-[repeating-linear-gradient(-45deg,#ED1C24,#ED1C24_10px,#000_10px,#000_20px)]"></div>
+                <div class="mt-9 flex flex-col gap-4">
+                    <div class="text-[0.8rem] font-black uppercase tracking-widest text-industrial-red">Pengumuman & Berita</div>
+                    <div class="text-gray-700 text-sm mb-2">Kelola pengumuman untuk event yang kamu buat. Pengumuman akan tampil ke peserta event.</div>
+                    <div class="w-full flex justify-end">
+                        <a href="{{ route('announcements.index') }}"
+                            class="inline-block px-6 py-3 bg-industrial-red text-white border-[3px] border-black font-black uppercase shadow-[4px_4px_0px_#000] hover:bg-red-700 transition-all text-sm">
+                            Kelola Pengumuman
+                        </a>
+                    </div>
                 </div>
             </div>
         @endif

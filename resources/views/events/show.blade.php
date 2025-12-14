@@ -93,10 +93,18 @@
 
                 @if(auth()->user() && auth()->user()->role === 'organizer')
                     <!-- Organizer Actions -->
-                    <div class="pt-6 border-t-[3px] border-black">
+                    <div class="pt-6 border-t-[3px] border-black flex flex-col gap-4">
                         <a href="{{ route('events.registrants', $event['id']) }}"
                             class="block w-full text-center bg-white text-black font-black uppercase py-4 px-6 border-[3px] border-black shadow-[6px_6px_0px_#000] hover:bg-black hover:text-white hover:-translate-y-[2px] hover:-translate-x-[2px] hover:shadow-[8px_8px_0px_#000] transition-all">
                             Kelola Peserta
+                        </a>
+                        <a href="{{ route('announcements.index', ['event' => $event['id']]) }}"
+                            class="block w-full text-center bg-industrial-red text-white font-black uppercase py-4 px-6 border-[3px] border-black shadow-[6px_6px_0px_#000] hover:bg-white hover:text-industrial-red hover:-translate-y-[2px] hover:-translate-x-[2px] hover:shadow-[8px_8px_0px_#000] transition-all">
+                            Kelola Pengumuman Event
+                        </a>
+                        <a href="{{ route('announcements.create', ['event' => $event['id']]) }}"
+                            class="block w-full text-center bg-white text-industrial-red font-black uppercase py-4 px-6 border-[3px] border-black shadow-[6px_6px_0px_#000] hover:bg-industrial-red hover:text-white hover:-translate-y-[2px] hover:-translate-x-[2px] hover:shadow-[8px_8px_0px_#000] transition-all">
+                            + Buat Pengumuman Baru
                         </a>
                     </div>
                 @endif
