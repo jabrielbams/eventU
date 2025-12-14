@@ -80,6 +80,90 @@
             </div>
         @endif
 
+        <!-- MODULE C: BOOKMARKED EVENTS -->
+        @if($user->isStudent())
+            <div
+                class="col-span-3 bg-white border-[3px] border-black shadow-[8px_8px_0px_#000] relative p-6">
+                <!-- Rivets -->
+                <div class="absolute w-2 h-2 bg-black rounded-full top-2 left-2"></div>
+                <div class="absolute w-2 h-2 bg-black rounded-full top-2 right-2"></div>
+                <div class="absolute w-2 h-2 bg-black rounded-full bottom-2 left-2"></div>
+                <div class="absolute w-2 h-2 bg-black rounded-full bottom-2 right-2"></div>
+
+                <div
+                    class="inline-block bg-industrial-red text-white px-6 py-3 font-black uppercase tracking-widest transform -translate-y-[50%] translate-x-[20px] shadow-[4px_4px_0px_rgba(0,0,0,0.3)] w-max mb-0">
+                    Event Ditandai
+                </div>
+
+                @if($bookmarkedEvents->count() > 0)
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        @foreach ($bookmarkedEvents as $event)
+                            @php
+                                $isPast = $event->date->isPast();
+                            @endphp
+                            <div class="relative block bg-white border-[3px] border-black p-4 transition-all {{ $isPast ? 'opacity-75' : '' }}">
+                                <!-- Unbookmark Button -->
+                                <form method="POST" action="{{ route('events.unbookmark', $event->id) }}" class="absolute top-2 right-2 z-10">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="bg-industrial-red text-white p-2 border-[2px] border-black shadow-[2px_2px_0px_#000] hover:bg-red-700 hover:-translate-y-[1px] hover:-translate-x-[1px] hover:shadow-[3px_3px_0px_#000] transition-all"
+                                        title="Hapus Bookmark">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/>
+                                        </svg>
+                                    </button>
+                                </form>
+
+                                <!-- Event Card Content -->
+                                <a href="{{ route('events.show', $event->id) }}" class="block">
+                                    <div class="flex items-start justify-between mb-3 pr-8">
+                                        <span class="inline-block bg-industrial-red text-white px-2 py-1 text-[0.6rem] font-black uppercase tracking-wider border-[2px] border-black shadow-[2px_2px_0px_0px_#000]">
+                                            {{ $event->category->name ?? 'UMUM' }}
+                                        </span>
+                                    </div>
+                                    <h3 class="font-black uppercase text-sm leading-tight mb-3">
+                                        {{ Str::limit($event->title, 50) }}
+                                    </h3>
+                                    <div class="space-y-2 text-xs">
+                                        <div class="flex items-center gap-2 text-gray-600">
+                                            <span>📅</span>
+                                            <span class="font-mono font-bold">{{ $event->date->format('d M Y') }}</span>
+                                        </div>
+                                        <div class="flex items-center gap-2 text-gray-600">
+                                            <span>📍</span>
+                                            <span class="font-semibold">{{ Str::limit($event->location, 25) }}</span>
+                                        </div>
+                                        <!-- Status Badge -->
+                                        @if($isPast)
+                                            <div class="pt-2 border-t border-gray-200">
+                                                <span class="inline-block px-2 py-1 border-[2px] border-gray-400 bg-gray-100 text-gray-600 text-[0.6rem] font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)]">
+                                                    Event sudah Selesai
+                                                </span>
+                                            </div>
+                                        @else
+                                            <div class="pt-2 border-t border-gray-200">
+                                                <span class="inline-block px-2 py-1 border-[2px] border-green-600 bg-green-100 text-green-700 text-[0.6rem] font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)]">
+                                                    Mendatang
+                                                </span>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </a>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="flex flex-col items-center justify-center h-[200px] border-[3px] border-dashed border-gray-300 mt-4">
+                        <div class="text-[4rem] mb-4 opacity-20">🔖</div>
+                        <div class="text-[1.5rem] font-black uppercase leading-none tracking-tight text-gray-400 mb-2">
+                            Belum Ada Bookmark
+                        </div>
+                    </div>
+                @endif
+            </div>
+        @endif
+
         <!-- MODULE D: EVENT FEED (ROSTER) -->
         <div
             class="col-span-3 min-h-[300px] bg-white border-[3px] border-black shadow-[8px_8px_0px_#000] relative p-6 flex flex-col">

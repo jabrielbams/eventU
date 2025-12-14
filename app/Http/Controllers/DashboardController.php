@@ -21,6 +21,19 @@ class DashboardController extends Controller
                 ->limit(5)
                 ->get();
 
+            // Get bookmarked events through the bookmark relationship
+            $bookmarkedEvents = Event::whereHas('bookmarks', function($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })
+                ->with('category')
+                ->orderBy('date', 'desc')
+                ->limit(5)
+                ->get();
+
+            // Debug: Log bookmark count
+            \Log::info('Bookmarked events count: ' . $bookmarkedEvents->count());
+            \Log::info('User bookmarks table count: ' . $user->bookmarks()->count());
+
             // Next upcoming event
             $nextEvent = $assignedEvents->first();
 
@@ -41,6 +54,9 @@ class DashboardController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->limit(5)
                 ->get();
+
+            // Organizers don't have bookmarked events
+            $bookmarkedEvents = collect([]);
 
             // Next upcoming event from created events
             $nextEvent = Event::where('user_id', $user->id)
@@ -64,6 +80,7 @@ class DashboardController extends Controller
         return view('dashboard.index', compact(
             'user',
             'assignedEvents',
+            'bookmarkedEvents',
             'nextEvent',
             'daysRemaining',
             'accountHealth',

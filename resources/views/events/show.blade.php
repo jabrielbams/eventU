@@ -104,8 +104,8 @@
                     <!-- Organizer Actions -->
                     <div class="pt-6 border-t-[3px] border-black">
                         <a href="{{ route('events.registrants', $event['id']) }}"
-                           class="block w-full text-center bg-white text-black font-black uppercase py-4 px-6 border-[3px] border-black shadow-[6px_6px_0px_#000] hover:bg-black hover:text-white hover:-translate-y-[2px] hover:-translate-x-[2px] hover:shadow-[8px_8px_0px_#000] transition-all">
-                            📋 Kelola Peserta
+                            class="block w-full text-center bg-white text-black font-black uppercase py-4 px-6 border-[3px] border-black shadow-[6px_6px_0px_#000] hover:bg-black hover:text-white hover:-translate-y-[2px] hover:-translate-x-[2px] hover:shadow-[8px_8px_0px_#000] transition-all">
+                            Kelola Peserta
                         </a>
                     </div>
                 @endif
@@ -113,45 +113,45 @@
                 <!-- Student Actions -->
                 @if(auth()->user() && auth()->user()->role === 'student')
                     <div class="pt-6 border-t-[3px] border-black">
-                        <div class="flex gap-4">
-                    <!-- Register Button -->
-                    <form method="POST" action="{{ route('events.register', $event['id']) }}" class="flex-1">
+                        <div class="flex gap-4 items-center">
+                            <!-- Register Button -->
+                            <form method="POST" action="{{ route('events.register', $event['id']) }}" class="flex-1">
                                 @csrf
                                 <button type="submit"
                                     class="w-full bg-industrial-red text-white font-black uppercase text-xl py-4 px-6 border-[3px] border-black shadow-[6px_6px_0px_#000] hover:bg-red-700 hover:-translate-y-[2px] hover:-translate-x-[2px] hover:shadow-[8px_8px_0px_#000] transition-all">
-                                    ✨ Daftar Event Sekarang
+                                    Daftar Event
                                 </button>
                             </form>
-                    </div>
 
-                    <!-- Bookmark Button -->
-                    @if (isset($event['is_bookmarked']) && $event['is_bookmarked'])
-                        <!-- Unbookmark Form -->
-                        <form method="POST" action="{{ route('events.unbookmark', $event['id']) }}">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit"
-                                class="bg-telkom-red text-telkom-white font-bold uppercase px-6 py-4 border-[3px] border-telkom-black shadow-[4px_4px_0px_0px_#1A1A1A] hover:bg-red-700 hover:shadow-[2px_2px_0px_0px_#1A1A1A] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
-                                title="Remove bookmark">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/>
-                                </svg>
-                            </button>
-                        </form>
-                    @else
-                        <!-- Bookmark Form -->
-                        <form method="POST" action="{{ route('events.bookmark', $event['id']) }}">
-                            @csrf
-                            <button type="submit"
-                                class="bg-telkom-white text-telkom-black font-bold uppercase px-6 py-4 border-[3px] border-telkom-black shadow-[4px_4px_0px_0px_#1A1A1A] hover:bg-gray-100 hover:shadow-[2px_2px_0px_0px_#1A1A1A] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
-                                title="Add bookmark">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 20 20">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 19V5z"/>
-                                </svg>
-                            </button>
-                        </form>
-                    @endif
-                </div>
+                            <!-- Bookmark Button -->
+                            @if (isset($event['is_bookmarked']) && $event['is_bookmarked'])
+                                <!-- Unbookmark Form -->
+                                <form method="POST" action="{{ route('events.unbookmark', $event['id']) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="bg-industrial-red text-white font-black uppercase px-6 py-4 border-[3px] border-black shadow-[6px_6px_0px_#000] hover:bg-red-700 hover:-translate-y-[2px] hover:-translate-x-[2px] hover:shadow-[8px_8px_0px_#000] transition-all"
+                                        title="Hapus Bookmark">
+                                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/>
+                                        </svg>
+                                    </button>
+                                </form>
+                            @else
+                                <!-- Bookmark Form -->
+                                <form method="POST" action="{{ route('events.bookmark', $event['id']) }}">
+                                    @csrf
+                                    <button type="submit"
+                                        class="bg-white text-black font-black uppercase px-6 py-4 border-[3px] border-black shadow-[6px_6px_0px_#000] hover:bg-black hover:text-white hover:-translate-y-[2px] hover:-translate-x-[2px] hover:shadow-[8px_8px_0px_#000] transition-all"
+                                        title="Tambah Bookmark">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 20 20">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 19V5z"/>
+                                        </svg>
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+                    </div>
                 @endif
             </div>
         </div>
