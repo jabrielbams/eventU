@@ -88,7 +88,10 @@
                             <span class="text-lg">🏢</span>
                             <strong class="text-xs font-black uppercase text-gray-600">Penyelenggara</strong>
                         </div>
-                        <span class="text-lg font-bold block font-mono">{{ $organizerName }}</span>
+                        <a href="{{ route('organizations.show', $event['organization']['id']) }}"
+                           class="text-lg font-bold block font-mono hover:text-industrial-red hover:underline transition-colors">
+                            {{ $organizerName }}
+                        </a>
                     </div>
                 </div>
 

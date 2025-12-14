@@ -56,6 +56,11 @@ Route::middleware(AuthenticateWithToken::class)->group(function () {
     Route::get('/events/{id}', [EventController::class, 'show'])->name('events.show');
     Route::post('/events/{id}/register', [EventController::class, 'register'])->name('events.register');
 
+    // Organization Profile
+    Route::get('/organizations/{id}', function ($id) {
+        return view('organizations.show', ['organizationId' => $id]);
+    })->name('organizations.show');
+
     // User Profile
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');

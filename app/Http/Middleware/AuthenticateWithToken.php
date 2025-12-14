@@ -12,6 +12,11 @@ class AuthenticateWithToken
 {
     public function handle(Request $request, Closure $next): Response
     {
+        // If already authenticated, skip token check
+        if (Auth::check()) {
+            return $next($request);
+        }
+
         $token = $request->cookie('access_token');
 
         if (!$token) {
@@ -25,7 +30,8 @@ class AuthenticateWithToken
                 ->withCookie(cookie()->forget('access_token'));
         }
 
-        Auth::login($accessToken->tokenable);
+        // Set user without triggering session regeneration
+        Auth::setUser($accessToken->tokenable);
 
         return $next($request);
     }
