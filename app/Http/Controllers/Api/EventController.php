@@ -18,7 +18,8 @@ class EventController extends Controller
     {
         // Handling Request
         try {
-            $query = Event::with(['category', 'organization', 'user']);
+            $query = Event::with(['category', 'organization', 'user'])
+                ->where('status', 'published'); // Only show published events
 
             // Handling Search
             if ($request->has('search')) {
@@ -81,11 +82,22 @@ class EventController extends Controller
     public function store(Request $request)
     {
         try {
-            // 1. Check Organization Profile
+            // 1. Check if user is organizer and has an organization
             $user = Auth::user();
-            if (!$user->organization) {
+
+            if (!$user->isOrganizer()) {
                 return response()->json([
-                    'message' => 'You must create an Organization Profile first.'
+                    'message' => 'Only organizers can create events.'
+                ], Response::HTTP_FORBIDDEN);
+            }
+
+            $organization = $user->organizations()
+                ->wherePivot('status', 'approved')
+                ->first();
+
+            if (!$organization) {
+                return response()->json([
+                    'message' => 'Kamu harus bergabung dengan organisasi terlebih dahulu.'
                 ], Response::HTTP_FORBIDDEN);
             }
 
@@ -107,14 +119,15 @@ class EventController extends Controller
             }
 
             // 4. Create Event
-            // Adding organization_id and user_id to the data
-            $validated['organization_id'] = $user->organization->id;
+            $validated['organization_id'] = $organization->id;
             $validated['user_id'] = $user->id;
 
             $event = Event::create($validated);
 
             // 5. Response
-            return new EventResource($event);
+            return (new EventResource($event))
+                ->response()
+                ->setStatusCode(Response::HTTP_CREATED);
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Gagal membuat event',
@@ -252,4 +265,127 @@ class EventController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     * Get all registered users for an event (Organizer only).
+     */
+    public function getRegistrants($id)
+    {
+        try {
+            $event = Event::with(['users' => function($query) {
+                $query->select('users.id', 'users.name', 'users.email', 'users.role')
+                      ->withPivot('created_at');
+            }])->find($id);
+
+            if (!$event) {
+                return response()->json(['message' => 'Event tidak ditemukan'], Response::HTTP_NOT_FOUND);
+            }
+
+            $registrants = $event->users->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role,
+                    'registered_at' => $user->pivot->created_at->format('d M Y H:i'),
+                ];
+            });
+
+            return response()->json([
+                'message' => 'Registrants retrieved successfully',
+                'data' => $registrants,
+                'total' => $registrants->count(),
+            ], Response::HTTP_OK);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Gagal mengambil data peserta',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Remove a user from event registration (Organizer only).
+     */
+    public function removeRegistrant($eventId, $userId)
+    {
+        try {
+            $event = Event::find($eventId);
+
+            if (!$event) {
+                return response()->json(['message' => 'Event tidak ditemukan'], Response::HTTP_NOT_FOUND);
+            }
+
+            // Check if user is registered
+            $isRegistered = $event->users()->where('user_id', $userId)->exists();
+
+            if (!$isRegistered) {
+                return response()->json(['message' => 'Pengguna tidak terdaftar di event ini'], Response::HTTP_NOT_FOUND);
+            }
+
+            // Remove registration
+            $event->users()->detach($userId);
+
+            return response()->json([
+                'message' => 'Peserta berhasil dihapus dari event',
+            ], Response::HTTP_OK);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Gagal menghapus peserta',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Update event status (Organizer only).
+     * Available statuses: draft, published, cancelled, completed
+     */
+    public function updateStatus(Request $request)
+    {
+        try {
+            // Validate input
+            $validated = $request->validate([
+                'event_id' => 'required|integer|exists:event,id',
+                'status' => 'required|in:draft,published,cancelled,completed'
+            ]);
+
+            $event = Event::findOrFail($validated['event_id']);
+
+            // Check if user owns this event
+            $user = Auth::user();
+            if ($event->user_id !== $user->id) {
+                return response()->json([
+                    'message' => 'Anda tidak memiliki akses untuk mengubah status event ini'
+                ], Response::HTTP_FORBIDDEN);
+            }
+
+            // Update status
+            $event->status = $validated['status'];
+            $event->save();
+
+            return response()->json([
+                'message' => 'Status event berhasil diubah',
+                'data' => new EventResource($event)
+            ], Response::HTTP_OK);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Event tidak ditemukan'
+            ], Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Gagal mengubah status event',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }
+

@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Api\OrganizationController;
 use App\Http\Middleware\CheckUserRole;
 use App\Http\Middleware\AuthenticateWithToken;
+use App\Models\Event;
 use App\Models\Category;
 
 // Public routes
@@ -28,45 +29,32 @@ Route::middleware(AuthenticateWithToken::class)->group(function () {
     // Dashboard - Industrial Control Panel
     Route::get('dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
-    // Event Catalog (public for authenticated users)
-    Route::get('/events', [EventController::class, 'index'])->name('events.index');
-
-    Route::get('/events/{id}', [EventController::class, 'show'])->name('events.show');
-
-    Route::post('/events/{id}/register', [EventController::class, 'register'])->name('events.register');
-
-    // User Profile
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-
     // Organizer-only routes
     Route::middleware(CheckUserRole::class.':organizer')->group(function () {
+        Route::post('/events', [EventController::class, 'store'])->name('events.store');
+
         Route::get('/events/create', function () {
             $categories = Category::all();
             return view('events.create', compact('categories'));
         })->name('events.create');
 
-        Route::post('/events', [EventController::class, 'store'])->name('events.store');
-
         Route::get('/events/{id}/edit', function ($id) {
-            $event = \App\Models\Event::findOrFail($id);
+            $event = Event::findOrFail($id);
             $categories = Category::all();
             return view('events.edit', compact('event', 'categories'));
         })->name('events.edit');
 
         Route::put('/events/{id}', [EventController::class, 'update'])->name('events.update');
-
-        Route::get('/organizations/create', function () {
-            return view('organizations.create');
-        })->name('organizations.create');
-
-        Route::get('/organizations/{id}', function ($id) {
-            return view('organizations.show', ['id' => $id]);
-        })->name('organizations.show');
-
-        Route::post('/organizations', [OrganizationController::class, 'store'])
-            ->name('organizations.store');
     });
+
+    // Event Catalog (public for authenticated users)
+    Route::get('/events', [EventController::class, 'index'])->name('events.index');
+    Route::get('/events/{id}', [EventController::class, 'show'])->name('events.show');
+    Route::post('/events/{id}/register', [EventController::class, 'register'])->name('events.register');
+
+    // User Profile
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 
     // Student-only routes
     Route::middleware(CheckUserRole::class.':student')->group(function () {
