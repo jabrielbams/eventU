@@ -39,7 +39,7 @@
     box-shadow: 4px 4px 0px 0px var(--color-telkom-black);
 }
 
-@utility neo-button:hover {
+@utility neo-button-hover {
     box-shadow: 2px 2px 0px 0px var(--color-telkom-black);
     transform: translate(2px, 2px);
 }
@@ -54,6 +54,6 @@
     box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.1);
 }
 
-@utility neo-input:focus {
+@utility neo-input-focus {
     box-shadow: 6px 6px 0px 0px var(--color-telkom-black);
 }

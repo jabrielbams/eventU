@@ -12,7 +12,14 @@ use App\Models\Category;
 
 // Public routes
 Route::get('/', function () {
-    return view('welcome');
+    // TODO: Optimize this query for high traffic (caching) and add error handling if no events are found.
+    // Fetch 3 upcoming events
+    $featuredEvents = \App\Models\Event::with('organization')
+        ->where('date', '>=', now())
+        ->orderBy('date', 'asc')
+        ->take(3)
+        ->get();
+    return view('welcome', compact('featuredEvents'));
 })->name('Landing Page');
 
 // Authentication
