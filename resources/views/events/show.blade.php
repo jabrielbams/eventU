@@ -26,74 +26,101 @@
 
     <!-- Event Detail Container -->
     <div class="max-w-6xl mx-auto">
-        <div class="neo-box bg-white overflow-hidden grid grid-cols-1 md:grid-cols-5 gap-0">
+        <div class="bg-white border-[3px] border-black shadow-[8px_8px_0px_#000] overflow-hidden relative">
+            <!-- Rivets -->
+            <div class="absolute w-2 h-2 bg-black rounded-full top-2 left-2 z-10"></div>
+            <div class="absolute w-2 h-2 bg-black rounded-full top-2 right-2 z-10"></div>
+
             @php
                 $imageUrl = $event['image_url'] ?? 'https://placehold.co/800x1200';
                 $categoryName = $event['category']['name'] ?? 'Event';
                 $organizerName = $event['organization']['name'] ?? 'Unknown';
+
+                // Format date and time
+                $dateFormatted = \Carbon\Carbon::parse($event['date'])->locale('id')->isoFormat('dddd, D MMMM YYYY');
+                $timeFormatted = \Carbon\Carbon::parse($event['time'])->format('H:i') . ' WIB';
             @endphp
 
-            <!-- Event Poster -->
-            <div class="md:col-span-2 relative min-h-[400px] md:min-h-[600px]">
+            <!-- Event Poster - TOP -->
+            <div class="relative w-full h-[400px] md:h-[500px] bg-gray-100">
                 <img src="{{ $imageUrl }}"
-                     class="w-full h-full object-cover md:border-r-[3px] md:border-telkom-black"
+                     class="w-full h-full object-contain"
                      alt="Event Poster">
             </div>
 
-            <!-- Event Details -->
-            <div class="md:col-span-3 p-8 md:p-12 flex flex-col justify-center">
+            <!-- Event Details - BOTTOM -->
+            <div class="p-8 md:p-12 border-t-[3px] border-black">
                 <!-- Category Badge -->
-                <span class="inline-block bg-telkom-red text-white px-4 py-2 border-2 border-telkom-black font-bold uppercase text-sm mb-4 self-start">
+                <span class="inline-block bg-industrial-red text-white px-4 py-2 border-[2px] border-black shadow-[2px_2px_0px_0px_#000] font-black uppercase text-sm mb-6">
                     {{ $categoryName }}
                 </span>
 
                 <!-- Title -->
-                <h1 class="text-4xl md:text-5xl font-black uppercase leading-tight mb-8 tracking-tight">
+                <h1 class="text-3xl md:text-5xl font-black uppercase leading-[0.95] mb-8 tracking-tight">
                     {{ $event['title'] }}
                 </h1>
 
                 <!-- Meta Information Grid -->
-                <div class="grid grid-cols-2 gap-6 mb-8 py-6 border-y-2 border-telkom-black">
-                    <div>
-                        <strong class="block text-xs font-bold uppercase text-gray-500 mb-1">Tanggal</strong>
-                        <span class="text-lg font-semibold">{{ $event['date'] }}</span>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 pb-8 border-b-[3px] border-black">
+                    <div class="bg-gray-50 p-4 border-[2px] border-black">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-lg">📅</span>
+                            <strong class="text-xs font-black uppercase text-gray-600">Tanggal</strong>
+                        </div>
+                        <span class="text-lg font-bold block font-mono">{{ $dateFormatted }}</span>
                     </div>
-                    <div>
-                        <strong class="block text-xs font-bold uppercase text-gray-500 mb-1">Waktu</strong>
-                        <span class="text-lg font-semibold">{{ $event['time'] }}</span>
+                    <div class="bg-gray-50 p-4 border-[2px] border-black">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-lg">🕒</span>
+                            <strong class="text-xs font-black uppercase text-gray-600">Waktu</strong>
+                        </div>
+                        <span class="text-lg font-bold block font-mono">{{ $timeFormatted }}</span>
                     </div>
-                    <div>
-                        <strong class="block text-xs font-bold uppercase text-gray-500 mb-1">Lokasi</strong>
-                        <span class="text-lg font-semibold">{{ $event['location'] }}</span>
+                    <div class="bg-gray-50 p-4 border-[2px] border-black">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-lg">📍</span>
+                            <strong class="text-xs font-black uppercase text-gray-600">Lokasi</strong>
+                        </div>
+                        <span class="text-lg font-bold block font-mono">{{ $event['location'] }}</span>
                     </div>
-                    <div>
-                        <strong class="block text-xs font-bold uppercase text-gray-500 mb-1">Penyelenggara</strong>
-                        <span class="text-lg font-semibold">{{ $organizerName }}</span>
+                    <div class="bg-gray-50 p-4 border-[2px] border-black">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-lg">🏢</span>
+                            <strong class="text-xs font-black uppercase text-gray-600">Penyelenggara</strong>
+                        </div>
+                        <span class="text-lg font-bold block font-mono">{{ $organizerName }}</span>
                     </div>
                 </div>
 
                 <!-- Description -->
-                <p class="text-lg leading-relaxed mb-8 text-gray-700">
-                    {{ $event['description'] }}
-                </p>
+                <div class="mb-8">
+                    <h2 class="text-xl font-black uppercase mb-4 tracking-tight">Deskripsi Event</h2>
+                    <p class="text-base leading-relaxed text-gray-700 font-medium">
+                        {{ $event['description'] }}
+                    </p>
+                </div>
 
                 @if(auth()->user() && auth()->user()->role === 'organizer')
                     <!-- Organizer Actions -->
-                    <div class="mb-6">
-                        <a href="{{ route('events.registrants', $event['id']) }}" class="block w-full text-center bg-telkom-white text-telkom-black font-bold uppercase py-3 px-6 border-[3px] border-telkom-black shadow-[4px_4px_0px_0px_#1A1A1A] hover:shadow-[2px_2px_0px_0px_#1A1A1A] hover:translate-x-[2px] hover:translate-y-[2px] transition-all mb-4">
-                            📋 Manage Registrants
+                    <div class="pt-6 border-t-[3px] border-black">
+                        <a href="{{ route('events.registrants', $event['id']) }}"
+                           class="block w-full text-center bg-white text-black font-black uppercase py-4 px-6 border-[3px] border-black shadow-[6px_6px_0px_#000] hover:bg-black hover:text-white hover:-translate-y-[2px] hover:-translate-x-[2px] hover:shadow-[8px_8px_0px_#000] transition-all">
+                            📋 Kelola Peserta
                         </a>
                     </div>
                 @endif
 
                 <!-- Register Button -->
                 @if(auth()->user() && auth()->user()->role === 'student')
-                <form method="POST" action="{{ route('events.register', $event['id']) }}">
-                    @csrf
-                    <button type="submit" class="bg-telkom-red text-telkom-white font-bold uppercase w-full text-xl py-4 border-[3px] border-telkom-black shadow-[4px_4px_0px_0px_#1A1A1A] hover:bg-red-700 hover:shadow-[2px_2px_0px_0px_#1A1A1A] hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
-                        Daftar Event
-                    </button>
-                </form>
+                    <div class="pt-6 border-t-[3px] border-black">
+                        <form method="POST" action="{{ route('events.register', $event['id']) }}">
+                            @csrf
+                            <button type="submit"
+                                    class="w-full bg-industrial-red text-white font-black uppercase text-xl py-4 px-6 border-[3px] border-black shadow-[6px_6px_0px_#000] hover:bg-red-700 hover:-translate-y-[2px] hover:-translate-x-[2px] hover:shadow-[8px_8px_0px_#000] transition-all">
+                                ✨ Daftar Event Sekarang
+                            </button>
+                        </form>
+                    </div>
                 @endif
             </div>
         </div>
