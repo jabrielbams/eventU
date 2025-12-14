@@ -57,9 +57,12 @@ Route::middleware(AuthenticateWithToken::class)->group(function () {
     // User Profile
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile/delete', [ProfileController::class, 'destroy'])->name('profile.delete');
 
     // Student-only routes
     Route::middleware(CheckUserRole::class.':student')->group(function () {
-        // Add student-specific routes here
+        // Bookmark routes
+        Route::post('/events/{id}/bookmark', [EventController::class, 'bookmarkEvent'])->name('events.bookmark');
+        Route::delete('/events/{id}/bookmark', [EventController::class, 'unbookmarkEvent'])->name('events.unbookmark');
     });
 });

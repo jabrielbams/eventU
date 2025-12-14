@@ -57,6 +57,12 @@
                     class="{{ $filterBtnBase }} {{ request('category') === 'competition' ? $activeClass : $inactiveClass }}">
                     Competition
                 </button>
+                @if (Auth::check() && Auth::user()->isStudent())
+                    <button type="submit" name="category" value="bookmark"
+                        class="{{ $filterBtnBase }} {{ request('category') === 'bookmark' ? $activeClass : $inactiveClass }}">
+                        Bookmark
+                    </button>
+                @endif
             </div>
         </form>
 
@@ -69,11 +75,12 @@
                         $day = $dateObj->format('d');
                         $month = strtoupper($dateObj->format('M'));
                         $categoryName = $event['category']['name'] ?? 'Event';
-                        $imageUrl = $event['image']
-                            ? (str_starts_with($event['image'], 'http')
-                                ? $event['image']
-                                : asset('storage/' . $event['image']))
-                            : 'https://placehold.co/600x400';
+                        $imageUrl = $event['image_url'] ?? 
+                            ($event['image']
+                                ? (str_starts_with($event['image'], 'http')
+                                    ? $event['image']
+                                    : asset('storage/' . $event['image']))
+                                : 'https://placehold.co/600x400');
                     @endphp
                     <div
                         class="bg-white border-[3px] border-black shadow-[8px_8px_0px_#000] flex flex-col relative transition-transform hover:-translate-y-1">
@@ -89,6 +96,38 @@
                                     class="block text-xs font-bold uppercase bg-black text-white px-1">{{ $month }}</span>
                                 <span class="block text-2xl font-black leading-none py-1">{{ $day }}</span>
                             </div>
+                            
+                            <!-- Bookmark Button (only for students) -->
+                            @if (Auth::check() && Auth::user()->isStudent())
+                                <div class="absolute top-4 left-4">
+                                    @if (isset($event['is_bookmarked']) && $event['is_bookmarked'])
+                                        <!-- Unbookmark Form -->
+                                        <form method="POST" action="{{ route('events.unbookmark', $event['id']) }}" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" 
+                                                class="bg-industrial-red text-white p-3 border-[3px] border-black shadow-[4px_4px_0px_0px_#000] hover:bg-red-700 transition-all"
+                                                title="Remove bookmark">
+                                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    @else
+                                        <!-- Bookmark Form -->
+                                        <form method="POST" action="{{ route('events.bookmark', $event['id']) }}" class="inline">
+                                            @csrf
+                                            <button type="submit" 
+                                                class="bg-white text-black p-3 border-[3px] border-black shadow-[4px_4px_0px_0px_#000] hover:bg-gray-100 transition-all"
+                                                title="Add bookmark">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 20 20">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 19V5z"/>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+                            @endif
                         </div>
 
                         <!-- Card Content -->

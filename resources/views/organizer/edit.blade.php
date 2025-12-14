@@ -114,9 +114,48 @@
                     Update Profile
                 </button>
             </form>
+
+            <!-- Delete Account Section -->
+            <div class="p-8 bg-telkom-white border-t-[3px] border-telkom-black">
+                <div class="bg-red-50 border-[3px] border-red-600 p-6">
+                    <h3 class="font-black uppercase text-lg mb-2 text-red-600">Delete Account</h3>
+                    <p class="text-sm mb-4 text-gray-700">Once you delete your account, there is no going back. Please be certain.</p>
+                    
+                    <button type="button" onclick="showDeleteModal()" class="w-full p-4 bg-red-600 text-white font-black uppercase tracking-widest border-[3px] border-telkom-black hover:bg-red-700 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all">
+                        Delete My Account
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-telkom-white border-[3px] border-telkom-black max-w-md w-full mx-4 relative">
+        <!-- Red accent bar -->
+        <div class="h-2 bg-telkom-red"></div>
+        
+        <div class="p-8">
+            <h2 class="text-2xl font-black uppercase mb-4">⚠️ Confirm Deletion</h2>
+            <p class="mb-6 text-gray-700">Are you absolutely sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.</p>
+            
+            <form action="{{ route('profile.delete') }}" method="POST">
+                @csrf
+                @method('DELETE')
+                
+                <div class="flex gap-4">
+                    <button type="button" onclick="hideDeleteModal()" class="flex-1 p-3 bg-gray-300 text-telkom-black font-bold uppercase border-[3px] border-telkom-black hover:bg-gray-400 transition-all">
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex-1 p-3 bg-red-600 text-white font-bold uppercase border-[3px] border-telkom-black hover:bg-red-700 transition-all">
+                        Yes, Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <!-- Image Preview Script -->
@@ -129,6 +168,21 @@
                 document.getElementById('avatarPreview').src = e.target.result;
             }
             reader.readAsDataURL(file);
+        }
+    });
+
+    function showDeleteModal() {
+        document.getElementById('deleteModal').classList.remove('hidden');
+    }
+
+    function hideDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            hideDeleteModal();
         }
     });
 </script>

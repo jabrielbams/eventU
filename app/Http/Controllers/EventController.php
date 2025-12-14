@@ -19,7 +19,13 @@ class EventController extends Controller
     {
         try {
             $apiController = new ApiEventController();
-            $response = $apiController->index($request);
+            
+            // Check if user is filtering by bookmarks
+            if ($request->input('category') === 'bookmark') {
+                $response = $apiController->getBookmarkedEvents($request);
+            } else {
+                $response = $apiController->index($request);
+            }
 
             $httpResponse = $response->toResponse($request);
             $responseData = json_decode($httpResponse->content(), true);
@@ -233,6 +239,68 @@ class EventController extends Controller
 
             return redirect()->back()
                 ->with('error', 'Gagal menghapus registrant');
+
+        } catch (Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Bookmark an event.
+     */
+    public function bookmarkEvent($id)
+    {
+        try {
+            $apiController = new ApiEventController();
+            $response = $apiController->bookmarkEvent($id);
+
+            if ($response instanceof \Illuminate\Http\JsonResponse) {
+                $data = $response->getData(true);
+                $statusCode = $response->status();
+
+                if ($statusCode === 200) {
+                    return redirect()->back()
+                        ->with('success', $data['message'] ?? 'Event berhasil dibookmark');
+                } else {
+                    return redirect()->back()
+                        ->with('error', $data['message'] ?? 'Gagal bookmark event');
+                }
+            }
+
+            return redirect()->back()
+                ->with('error', 'Gagal bookmark event');
+
+        } catch (Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Remove bookmark from an event.
+     */
+    public function unbookmarkEvent($id)
+    {
+        try {
+            $apiController = new ApiEventController();
+            $response = $apiController->unbookmarkEvent($id);
+
+            if ($response instanceof \Illuminate\Http\JsonResponse) {
+                $data = $response->getData(true);
+                $statusCode = $response->status();
+
+                if ($statusCode === 200) {
+                    return redirect()->back()
+                        ->with('success', $data['message'] ?? 'Bookmark berhasil dihapus');
+                } else {
+                    return redirect()->back()
+                        ->with('error', $data['message'] ?? 'Gagal menghapus bookmark');
+                }
+            }
+
+            return redirect()->back()
+                ->with('error', 'Gagal menghapus bookmark');
 
         } catch (Exception $e) {
             return redirect()->back()

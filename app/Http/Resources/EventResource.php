@@ -14,6 +14,13 @@ class EventResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $user = auth()->user();
+        $isBookmarked = false;
+        
+        if ($user) {
+            $isBookmarked = $user->bookmarks()->where('event_id', $this->id)->exists();
+        }
+
         return [
             'id' =>  $this->id,
             'title' =>  $this->title,
@@ -27,6 +34,7 @@ class EventResource extends JsonResource
             'image_url' =>  $this->image ? asset('storage/' . $this->image) : null,
             'status' =>  $this->status,
             'is_online' =>  $this->is_online,
+            'is_bookmarked' =>  $isBookmarked,
         ];
     }
 }

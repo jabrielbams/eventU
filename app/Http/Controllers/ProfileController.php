@@ -57,5 +57,22 @@ class ProfileController extends Controller
 
         return redirect()->route('profile.edit')->with('success', 'Profile updated successfully!');
     }
+
+    public function destroy(Request $request)
+    {
+        $user = Auth::user();
+
+        // Log out the user
+        Auth::logout();
+
+        // Invalidate the session
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // Delete the user account
+        $user->delete();
+
+        return redirect()->route('login')->with('success', 'Your account has been deleted successfully.');
+    }
 }
 

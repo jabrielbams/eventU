@@ -430,4 +430,114 @@ class EventController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     * Bookmark an event for the authenticated user.
+     */
+    public function bookmarkEvent($id)
+    {
+        try {
+            $event = Event::findOrFail($id);
+            $user = Auth::user();
+
+            // Check if already bookmarked
+            if ($user->bookmarks()->where('event_id', $event->id)->exists()) {
+                return response()->json([
+                    'message' => 'Event sudah dibookmark'
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
+            // Create bookmark
+            $user->bookmarks()->create(['event_id' => $event->id]);
+
+            return response()->json([
+                'message' => 'Event berhasil dibookmark',
+                'data' => new EventResource($event)
+            ], Response::HTTP_OK);
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Event tidak ditemukan'
+            ], Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Gagal bookmark event',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Remove bookmark from an event for the authenticated user.
+     */
+    public function unbookmarkEvent($id)
+    {
+        try {
+            $event = Event::findOrFail($id);
+            $user = Auth::user();
+
+            $bookmark = $user->bookmarks()->where('event_id', $event->id)->first();
+
+            if (!$bookmark) {
+                return response()->json([
+                    'message' => 'Bookmark tidak ditemukan'
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            $bookmark->delete();
+
+            return response()->json([
+                'message' => 'Bookmark berhasil dihapus'
+            ], Response::HTTP_OK);
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Event tidak ditemukan'
+            ], Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Gagal menghapus bookmark',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Get all bookmarked events for the authenticated user.
+     */
+    public function getBookmarkedEvents(Request $request)
+    {
+        try {
+            $user = Auth::user();
+
+            // Get event IDs from bookmarks
+            $eventIds = $user->bookmarks()->pluck('event_id');
+
+            // Query events with same filters as index
+            $query = Event::with(['category', 'organization', 'user'])
+                ->whereIn('id', $eventIds)
+                ->where('status', 'published');
+
+            // Handling Search
+            if ($request->has('search')) {
+                $search = $request->input('search');
+                $query->where(function ($q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%")
+                        ->orWhere('location', 'like', "%{$search}%");
+                });
+            }
+
+            // Order by latest
+            $events = $query->orderBy('date', 'desc')->paginate(10);
+
+            return EventResource::collection($events);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Gagal mengambil bookmarked events',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

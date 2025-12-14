@@ -27,6 +27,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // Event registration (for all authenticated users)
     Route::post('/events/{id}/register', [EventController::class, 'registerForEvent']);
 
+    // Bookmark endpoints (for students)
+    Route::post('/events/{id}/bookmark', [EventController::class, 'bookmarkEvent']);
+    Route::delete('/events/{id}/bookmark', [EventController::class, 'unbookmarkEvent']);
+    Route::get('/bookmarks', [EventController::class, 'getBookmarkedEvents']);
+
     // Organizer-only API routes
     Route::middleware(CheckUserRole::class.':organizer')->group(function () {
         // Event CRUD
