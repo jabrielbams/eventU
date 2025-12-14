@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>TelyuEvents - @yield('title', 'User Panel')</title>
+    <title>TelyuEvents - @yield('title', 'Dashboard')</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -53,7 +53,7 @@
             </div>
 
             <div class="mb-8 border-b-[3px] border-black pb-5">
-                <div class="text-[2.2rem] font-black uppercase leading-[0.9] tracking-tight">USER<br>PANEL</div>
+                <div class="text-[2.2rem] font-black uppercase leading-[0.9] tracking-tight">Dashboard</div>
                 <div class="mt-2 text-[0.8rem] font-bold uppercase tracking-widest text-gray-500">
                     @auth
                         ID:
@@ -76,22 +76,17 @@
 
                 <a href="{{ route('dashboard') }}"
                     class="{{ $btnClass }} {{ request()->routeIs('dashboard') ? $btnActive : $btnDefault . ' ' . $btnHover }}">::
-                    Dashboard</a>
+                    Beranda</a>
                 <a href="{{ route('events.index') }}"
                     class="{{ $btnClass }} {{ request()->routeIs('events.*') ? $btnActive : $btnDefault . ' ' . $btnHover }}">::
-                    All Events</a>
+                    Cari Event</a>
                 <a href="{{ route('profile.edit') }}"
                     class="{{ $btnClass }} {{ request()->routeIs('profile.*') ? $btnActive : $btnDefault . ' ' . $btnHover }}">::
-                    My Profile</a>
+                    Profil Saya</a>
             </nav>
 
             <!-- Bottom Controls -->
             <div class="mt-auto flex flex-col gap-3">
-                <!-- Back to Main Site -->
-                <a href="{{ url('/') }}"
-                    class="{{ $btnClass }} bg-white border-dashed hover:border-solid {{ $btnHover }} shadow-none hover:shadow-[6px_6px_0px_#000]">&lt;
-                    Back to Home</a>
-
                 @auth
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf

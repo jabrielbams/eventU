@@ -3,188 +3,282 @@
 @section('title', 'Update Profile')
 
 @section('content')
-<div class="flex justify-center items-center min-h-screen py-12">
+    <div class="min-h-screen py-10 px-4">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
 
-    <!-- Kinetic Stack Component -->
-    <div class="relative w-full max-w-2xl mx-auto px-4 group">
-        <!-- Layer 1: Bottom (Black Shadow) -->
-        <div class="absolute w-full h-full top-0 left-0 bg-telkom-black border-[3px] border-telkom-black transition-all duration-500 ease-out group-hover:translate-x-2 group-hover:translate-y-2"></div>
+            <!-- COLUMN 1: THE IDENTITY STACK (Avatar) -->
+            <div class="flex flex-col items-center">
+                <div class="group relative w-full aspect-square max-w-[320px]">
+                    <!-- Layer 1 (Bottom): Black Block -->
+                    <div
+                        class="absolute inset-0 bg-black border-[3px] border-black transition-transform duration-300 group-hover:translate-x-[-8px] group-hover:translate-y-[-8px]">
+                    </div>
 
-        <!-- Layer 2: Middle (Telkom Red) -->
-        <div class="absolute w-full h-full top-0 left-0 bg-telkom-red border-[3px] border-telkom-black transition-all duration-500 ease-out group-hover:translate-x-2 group-hover:rotate-2"></div>
+                    <!-- Layer 2 (Middle): Telkom Red Block -->
+                    <div
+                        class="absolute inset-0 bg-[#ED1C24] border-[3px] border-black transition-transform duration-300 group-hover:translate-x-[8px] group-hover:translate-y-[8px]">
+                    </div>
 
-        <!-- Layer 3: Top (Main Content) -->
-        <div class="relative bg-telkom-white border-[3px] border-telkom-black transition-all duration-500 ease-out group-hover:-translate-x-2 group-hover:-translate-y-2">
-
-            <!-- Avatar Section -->
-            <div class="flex flex-col items-center p-8 bg-telkom-white border-b-[3px] border-telkom-black">
-                <div class="relative w-32 h-32 mb-6">
-                    <img id="avatarPreview"
-                         src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=000000&color=ffffff&size=128"
-                         alt="User Avatar"
-                         class="w-full h-full object-cover border-[3px] border-telkom-black grayscale hover:grayscale-0 transition-all duration-300">
-
-                    <label for="avatarInput" class="absolute -bottom-1 -right-1 bg-telkom-red border-[3px] border-telkom-black text-telkom-white w-10 h-10 flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="butt" stroke-linejoin="miter">
-                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-                            <circle cx="12" cy="13" r="4"></circle>
-                        </svg>
-                    </label>
-                    <input type="file" id="avatarInput" accept="image/*" class="hidden">
-                </div>
-                <h2 class="text-2xl font-black uppercase">{{ auth()->user()->name }}</h2>
-                <p class="text-sm font-bold opacity-60">Profile Kamu</p>
-            </div>
-
-            <!-- Form Section -->
-            <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="p-8 bg-telkom-white">
-                @csrf
-                @method('PUT')
-
-                <div class="mb-6">
-                    <label class="block font-extrabold uppercase mb-2 text-sm">Nama Lengkap</label>
-                    <input type="text"
-                           name="name"
-                           class="w-full p-4 border-[3px] border-telkom-black font-medium text-base bg-telkom-white outline-none focus:bg-gray-100 transition-colors"
-                           value="{{ old('name', auth()->user()->name) }}">
-                </div>
-
-                <div class="mb-6">
-                    <label class="block font-extrabold uppercase mb-2 text-sm">Alamat Email</label>
-                    <input type="email"
-                           name="email"
-                           class="w-full p-4 border-[3px] border-telkom-black font-medium text-base bg-telkom-white outline-none opacity-70 cursor-not-allowed"
-                           value="{{ old('email', auth()->user()->email) }}"
-                           readonly>
-                </div>
-
-                @if(auth()->user()->role === 'organizer')
-                <div class="my-8 border-t-[3px] border-telkom-black relative">
-                    <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-telkom-white px-4 font-bold uppercase text-sm">Organization</span>
-                </div>
-
-                <div class="mb-6">
-                    <label class="block font-extrabold uppercase mb-2 text-sm">Gabung Organisasi</label>
-                    @if(auth()->user()->organization_id)
-                        @php
-                            $userOrg = auth()->user()->organizations()->wherePivot('organization_id', auth()->user()->organization_id)->first();
-                            $status = $userOrg ? $userOrg->pivot->status : null;
-                        @endphp
-                        @if($status === 'approved')
-                            <div class="w-full p-4 border-[3px] border-green-600 bg-green-100 text-green-800 font-bold">
-                                ✓ Approved - {{ \App\Models\Organization::find(auth()->user()->organization_id)->name }}
-                            </div>
-                        @elseif($status === 'pending')
-                            <div class="w-full p-4 border-[3px] border-yellow-500 bg-yellow-100 text-yellow-800 font-bold">
-                                ⏳ Pending Approval - {{ \App\Models\Organization::find(auth()->user()->organization_id)->name }}
-                            </div>
-                        @elseif($status === 'rejected')
-                            <div class="w-full p-4 border-[3px] border-red-600 bg-red-100 text-red-800 font-bold mb-2">
-                                ✗ Rejected - {{ \App\Models\Organization::find(auth()->user()->organization_id)->name }}
-                            </div>
-                            <input type="number"
-                                   name="organization_id"
-                                   class="w-full p-4 border-[3px] border-telkom-black font-medium text-base bg-telkom-white outline-none focus:bg-gray-100 transition-colors"
-                                   placeholder="Masukkan ID Organisasi untuk mencoba bergabung kembali">
+                    <!-- Layer 3 (Top): Image Container -->
+                    <div
+                        class="absolute inset-0 bg-white border-[3px] border-black overflow-hidden flex items-center justify-center relative z-10 transition-transform duration-300 group-hover:translate-x-0 group-hover:translate-y-0">
+                        @if (auth()->user()->avatar)
+                            <!-- Assuming there might be a stored avatar, handling fallback -->
+                            <img id="avatar-preview" src="{{ asset('storage/' . auth()->user()->avatar) }}"
+                                class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300"
+                                alt="Identity Image">
+                        @else
+                            <img id="avatar-preview"
+                                src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=000000&color=ffffff&size=256"
+                                class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300"
+                                alt="Identity Image">
                         @endif
-                    @else
-                        <input type="number"
-                               name="organization_id"
-                               class="w-full p-4 border-[3px] border-telkom-black font-medium text-base bg-telkom-white outline-none focus:bg-gray-100 transition-colors"
-                               placeholder="Masukkan ID Organisasi untuk mencoba bergabung"
-                               value="{{ old('organization_id') }}">
-                        <small class="block mt-2 text-sm opacity-70">Masukkan ID Organisasi</small>
-                    @endif
-                </div>
-                @endif
+                    </div>
 
-                <div class="my-8 border-t-[3px] border-telkom-black relative">
-                    <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-telkom-white px-4 font-bold uppercase text-sm">Security</span>
-                </div>
-
-                <div class="mb-6">
-                    <label class="block font-extrabold uppercase mb-2 text-sm">Kata Sandi Baru</label>
-                    <input type="password"
-                           name="password"
-                           class="w-full p-4 border-[3px] border-telkom-black font-medium text-base bg-telkom-white outline-none focus:bg-gray-100 transition-colors"
-                           placeholder="Kosongkan jika tidak ingin mengubah kata sandi">
+                    <!-- Upload Button (Camera Icon) -->
+                    <label for="avatar"
+                        class="absolute -bottom-6 -right-6 z-20 w-16 h-16 bg-black border-[3px] border-black flex items-center justify-center cursor-pointer hover:bg-[#CCFF00] transition-colors shadow-[4px_4px_0px_white]">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="h-8 w-8 text-white hover:text-black transition-colors" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="3"
+                                d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                            <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="3"
+                                d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <input type="file" id="avatar" name="avatar" class="hidden" accept="image/*"
+                            form="profile-form">
+                    </label>
                 </div>
 
-                <button type="submit" class="w-full p-4 bg-telkom-black text-telkom-white font-black uppercase tracking-widest border-[3px] border-telkom-black hover:bg-telkom-red hover:text-telkom-black hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all">
-                    Update Profile
-                </button>
-            </form>
+                <div class="mt-12 text-center">
+                    <h2
+                        class="text-3xl font-black uppercase tracking-tighter bg-black text-white px-4 py-1 inline-block transform -skew-x-6">
+                        {{ auth()->user()->name }}
+                    </h2>
+                    <p class="font-mono font-bold mt-2 text-[#ED1C24] uppercase tracking-widest">
+                        ID: {{ auth()->user()->id }} // {{ auth()->user()->role }}
+                    </p>
+                </div>
+            </div>
 
-            <!-- Delete Account Section -->
-            <div class="p-8 bg-telkom-white border-t-[3px] border-telkom-black">
-                <div class="bg-red-50 border-[3px] border-red-600 p-6">
-                    <h3 class="font-black uppercase text-lg mb-2 text-red-600">Delete Account</h3>
-                    <p class="text-sm mb-4 text-gray-700">Once you delete your account, there is no going back. Please be certain.</p>
-                    
-                    <button type="button" onclick="showDeleteModal()" class="w-full p-4 bg-red-600 text-white font-black uppercase tracking-widest border-[3px] border-telkom-black hover:bg-red-700 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all">
-                        Delete My Account
+            <!-- COLUMN 2: THE DATA SHEET (Form) -->
+            <div class="md:col-span-2">
+                <div class="bg-white border-[3px] border-black shadow-[8px_8px_0px_#000] relative">
+
+                    <!-- Header: Caution Tape Pattern -->
+                    <div
+                        class="h-8 w-full border-b-[3px] border-black bg-[repeating-linear-gradient(45deg,#ED1C24,#ED1C24_10px,#FFFFFF_10px,#FFFFFF_20px)] flex items-center justify-center overflow-hidden">
+                        <div class="bg-black text-white font-black text-xs px-2 py-0.5 transform rotate-2">PERSONNEL DATA //
+                            CONFIDENTIAL</div>
+                    </div>
+
+                    <div class="p-8">
+                        <form id="profile-form" action="{{ route('profile.update') }}" method="POST"
+                            enctype="multipart/form-data" class="space-y-8">
+                            @csrf
+                            @method('PUT')
+
+                            <!-- Identity Section -->
+                            <div class="space-y-6">
+                                <div class="flex items-center gap-2 mb-4">
+                                    <span class="w-4 h-4 bg-black"></span>
+                                    <h3 class="font-black text-xl uppercase tracking-widest">IDENTITAS UTAMA</h3>
+                                    <div class="flex-grow h-[3px] bg-black"></div>
+                                </div>
+
+                                <!-- Name -->
+                                <div class="group relative">
+                                    <label
+                                        class="block font-black uppercase text-xs text-white bg-black inline-block px-2 py-1 mb-1 transform -skew-x-12">
+                                        NAMA LENGKAP
+                                    </label>
+                                    <input type="text" name="name" value="{{ old('name', auth()->user()->name) }}"
+                                        class="w-full bg-[#f2f2f2] border-[3px] border-black p-4 font-mono text-lg focus:outline-none focus:bg-white focus:translate-x-[-4px] focus:translate-y-[-4px] focus:shadow-[8px_8px_0px_0px_black] transition-all placeholder-gray-400"
+                                        placeholder="MASUKKAN NAMA BARU">
+                                </div>
+
+                                <!-- Email (Locked) -->
+                                <div class="group relative opacity-75">
+                                    <div
+                                        class="absolute right-0 top-0 bg-[#ED1C24] text-white text-[10px] font-bold px-2 py-1 border-l-[3px] border-b-[3px] border-black z-10">
+                                        LOCKED
+                                    </div>
+                                    <label
+                                        class="block font-black uppercase text-xs text-white bg-[#555] inline-block px-2 py-1 mb-1 transform -skew-x-12">
+                                        EMAIL TERDAFTAR
+                                    </label>
+                                    <input type="email" value="{{ auth()->user()->email }}" disabled
+                                        class="w-full bg-[#e5e5e5] border-[3px] border-black border-dashed p-4 font-mono text-lg text-gray-500 cursor-not-allowed select-none">
+                                </div>
+
+                                <!-- Organization (If Organizer) -->
+                                @if (auth()->user()->role === 'organizer')
+                                    <div class="group relative mt-6">
+                                        <label
+                                            class="block font-black uppercase text-xs text-white bg-black inline-block px-2 py-1 mb-1 transform -skew-x-12">
+                                            ORGANISASI
+                                        </label>
+
+                                        @php
+                                            $userOrg = auth()
+                                                ->user()
+                                                ->organizations()
+                                                ->wherePivot('organization_id', auth()->user()->organization_id)
+                                                ->first();
+                                            $status = $userOrg ? $userOrg->pivot->status : null;
+                                            $orgName = $userOrg ? $userOrg->name : '';
+                                        @endphp
+
+                                        @if ($status === 'approved')
+                                            <div
+                                                class="w-full p-4 border-[3px] border-black bg-[#CCFF00] font-mono font-bold flex items-center gap-2">
+                                                <span class="text-xl">✓</span> APPROVED: {{ $orgName }}
+                                            </div>
+                                        @elseif($status === 'pending')
+                                            <div
+                                                class="w-full p-4 border-[3px] border-black bg-yellow-300 font-mono font-bold flex items-center gap-2">
+                                                <span class="text-xl">⏳</span> PENDING: {{ $orgName }}
+                                            </div>
+                                        @elseif($status === 'rejected')
+                                            <div
+                                                class="w-full p-4 border-[3px] border-black bg-[#ED1C24] text-white font-mono font-bold flex items-center gap-2 mb-2">
+                                                <span class="text-xl">✗</span> REJECTED: {{ $orgName }}
+                                            </div>
+                                            <input type="number" name="organization_id"
+                                                class="w-full bg-[#f2f2f2] border-[3px] border-black p-4 font-mono text-lg focus:outline-none focus:bg-white focus:translate-x-[-4px] focus:translate-y-[-4px] focus:shadow-[8px_8px_0px_0px_black] transition-all"
+                                                placeholder="MASUKKAN ID ORGANISASI BARU">
+                                        @else
+                                            <input type="number" name="organization_id"
+                                                value="{{ old('organization_id') }}"
+                                                class="w-full bg-[#f2f2f2] border-[3px] border-black p-4 font-mono text-lg focus:outline-none focus:bg-white focus:translate-x-[-4px] focus:translate-y-[-4px] focus:shadow-[8px_8px_0px_0px_black] transition-all"
+                                                placeholder="MASUKKAN ID ORGANISASI">
+                                        @endif
+                                    </div>
+                                @endif
+                            </div>
+
+                            <!-- Security Section -->
+                            <div class="space-y-6 pt-6 border-t-[3px] border-black border-dashed">
+                                <div class="flex items-center gap-2 mb-4">
+                                    <span class="w-4 h-4 bg-[#ED1C24]"></span>
+                                    <h3 class="font-black text-xl uppercase tracking-widest text-[#ED1C24]">KEAMANAN</h3>
+                                    <div class="flex-grow h-[3px] bg-[#ED1C24] bg-opacity-20"></div>
+                                </div>
+
+                                <div class="group relative">
+                                    <label
+                                        class="block font-black uppercase text-xs text-white bg-black inline-block px-2 py-1 mb-1 transform -skew-x-12">
+                                        PASSWORD BARU
+                                    </label>
+                                    <input type="password" name="password"
+                                        class="w-full bg-[#f2f2f2] border-[3px] border-black p-4 font-mono text-lg focus:outline-none focus:bg-white focus:translate-x-[-4px] focus:translate-y-[-4px] focus:shadow-[8px_8px_0px_0px_black] transition-all"
+                                        placeholder="KOSONGKAN JIKA TIDAK UBAH">
+                                </div>
+                            </div>
+
+                            <!-- Action Bar -->
+                            <div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
+                                <button type="submit"
+                                    class="w-full md:w-auto px-8 py-4 bg-black text-white font-black text-xl uppercase tracking-widest border-[3px] border-black hover:bg-[#ED1C24] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-4px] hover:translate-y-[-4px] transition-all flex items-center justify-center gap-3">
+                                    <span>PERBARUI DATA</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="3"
+                                            d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Delete Account Section -->
+                <div class="mt-8 bg-white border-[3px] border-industrial-red shadow-[8px_8px_0px_#000] p-6 relative">
+                    <!-- Rivets -->
+                    <div class="absolute w-2 h-2 bg-black rounded-full top-2 left-2"></div>
+                    <div class="absolute w-2 h-2 bg-black rounded-full top-2 right-2"></div>
+                    <div class="absolute w-2 h-2 bg-black rounded-full bottom-2 left-2"></div>
+                    <div class="absolute w-2 h-2 bg-black rounded-full bottom-2 right-2"></div>
+
+                    <h3 class="font-black uppercase text-lg mb-2 text-industrial-red">⚠️ Hapus Akun</h3>
+                    <p class="text-sm mb-4 text-gray-700">Setelah akun dihapus, data Anda tidak dapat dikembalikan.</p>
+
+                    <button type="button" onclick="showDeleteModal()"
+                        class="w-full p-4 bg-industrial-red text-white font-black uppercase tracking-widest border-[3px] border-black shadow-[4px_4px_0px_#000] hover:bg-black hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_#000] transition-all">
+                        Hapus Akun Saya
                     </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white border-[3px] border-black max-w-md w-full mx-4 shadow-[8px_8px_0px_#000] relative">
+                <!-- Rivets -->
+                <div class="absolute w-2 h-2 bg-black rounded-full top-2 left-2 z-10"></div>
+                <div class="absolute w-2 h-2 bg-black rounded-full top-2 right-2 z-10"></div>
+                <div class="absolute w-2 h-2 bg-black rounded-full bottom-2 left-2 z-10"></div>
+                <div class="absolute w-2 h-2 bg-black rounded-full bottom-2 right-2 z-10"></div>
+
+                <!-- Red accent bar -->
+                <div class="h-3 bg-industrial-red border-b-[3px] border-black"></div>
+
+                <div class="p-8">
+                    <h2 class="text-2xl font-black uppercase mb-4">⚠️ Konfirmasi Penghapusan</h2>
+                    <p class="mb-6 text-gray-700">Apakah Anda yakin ingin menghapus akun Anda? Tindakan ini tidak dapat dibatalkan dan semua data Anda akan dihapus secara permanen.</p>
+
+                    <form action="{{ route('profile.delete') }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+
+                        <div class="flex gap-4">
+                            <button type="button" onclick="hideDeleteModal()"
+                                class="flex-1 p-3 bg-white text-black font-bold uppercase border-[3px] border-black shadow-[4px_4px_0px_#000] hover:bg-gray-100 hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_#000] transition-all">
+                                Batal
+                            </button>
+                            <button type="submit"
+                                class="flex-1 p-3 bg-industrial-red text-white font-bold uppercase border-[3px] border-black shadow-[4px_4px_0px_#000] hover:bg-black hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_#000] transition-all">
+                                Ya, Hapus
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
-</div>
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('avatar');
+            const previewImage = document.getElementById('avatar-preview');
 
-<!-- Delete Confirmation Modal -->
-<div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-telkom-white border-[3px] border-telkom-black max-w-md w-full mx-4 relative">
-        <!-- Red accent bar -->
-        <div class="h-2 bg-telkom-red"></div>
-        
-        <div class="p-8">
-            <h2 class="text-2xl font-black uppercase mb-4">⚠️ Confirm Deletion</h2>
-            <p class="mb-6 text-gray-700">Are you absolutely sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.</p>
-            
-            <form action="{{ route('profile.delete') }}" method="POST">
-                @csrf
-                @method('DELETE')
-                
-                <div class="flex gap-4">
-                    <button type="button" onclick="hideDeleteModal()" class="flex-1 p-3 bg-gray-300 text-telkom-black font-bold uppercase border-[3px] border-telkom-black hover:bg-gray-400 transition-all">
-                        Cancel
-                    </button>
-                    <button type="submit" class="flex-1 p-3 bg-red-600 text-white font-bold uppercase border-[3px] border-telkom-black hover:bg-red-700 transition-all">
-                        Yes, Delete
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+            fileInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
 
-<!-- Image Preview Script -->
-<script>
-    document.getElementById('avatarInput').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('avatarPreview').src = e.target.result;
+        function showDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('hidden');
+        }
+
+        function hideDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('deleteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideDeleteModal();
             }
-            reader.readAsDataURL(file);
-        }
-    });
-
-    function showDeleteModal() {
-        document.getElementById('deleteModal').classList.remove('hidden');
-    }
-
-    function hideDeleteModal() {
-        document.getElementById('deleteModal').classList.add('hidden');
-    }
-
-    // Close modal when clicking outside
-    document.getElementById('deleteModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            hideDeleteModal();
-        }
-    });
-</script>
-
+        });
+    </script>
 @endsection
