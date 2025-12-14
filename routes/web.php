@@ -46,6 +46,8 @@ Route::middleware(AuthenticateWithToken::class)->group(function () {
         })->name('events.edit');
 
         Route::put('/events/{id}', [EventController::class, 'update'])->name('events.update');
+        Route::get('/events/{id}/registrants', [EventController::class, 'registrants'])->name('events.registrants');
+        Route::delete('/events/{eventId}/registrants/{userId}', [EventController::class, 'removeRegistrant'])->name('events.registrants.remove');
     });
 
     // Event Catalog (public for authenticated users)

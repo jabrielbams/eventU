@@ -144,4 +144,100 @@ class EventController extends Controller
         }
     }
 
+    /**
+     * Display event registrants for organizers.
+     */
+    public function registrants($id)
+    {
+        try {
+            $apiController = new ApiEventController();
+            $response = $apiController->getRegistrants($id);
+
+            if ($response instanceof \Illuminate\Http\JsonResponse) {
+                $data = $response->getData(true);
+                $statusCode = $response->status();
+
+                if ($statusCode === 200) {
+                    $event = Event::findOrFail($id);
+                    $registrants = $data['data'] ?? [];
+
+                    return view('events.registrants', compact('event', 'registrants'));
+                } else {
+                    return redirect()->back()
+                        ->with('error', $data['message'] ?? 'Gagal memuat data registrants');
+                }
+            }
+
+            return redirect()->back()
+                ->with('error', 'Gagal memuat data registrants');
+
+        } catch (Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Register user for an event.
+     */
+    public function register(Request $request, $id)
+    {
+        try {
+            $apiController = new ApiEventController();
+            $apiRequest = new Request();
+            $response = $apiController->registerForEvent($id);
+
+            if ($response instanceof \Illuminate\Http\JsonResponse) {
+                $data = $response->getData(true);
+                $statusCode = $response->status();
+
+                if ($statusCode === 200) {
+                    return redirect()->back()
+                        ->with('success', $data['message'] ?? 'Berhasil mendaftar ke event!');
+                } else {
+                    return redirect()->back()
+                        ->with('error', $data['message'] ?? 'Gagal mendaftar ke event');
+                }
+            }
+
+            return redirect()->back()
+                ->with('error', 'Gagal mendaftar ke event');
+
+        } catch (Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Remove a registrant from an event.
+     */
+    public function removeRegistrant($eventId, $userId)
+    {
+        try {
+            $apiController = new ApiEventController();
+            $response = $apiController->removeRegistrant($eventId, $userId);
+
+            if ($response instanceof \Illuminate\Http\JsonResponse) {
+                $data = $response->getData(true);
+                $statusCode = $response->status();
+
+                if ($statusCode === 200) {
+                    return redirect()->back()
+                        ->with('success', $data['message'] ?? 'Registrant berhasil dihapus');
+                } else {
+                    return redirect()->back()
+                        ->with('error', $data['message'] ?? 'Gagal menghapus registrant');
+                }
+            }
+
+            return redirect()->back()
+                ->with('error', 'Gagal menghapus registrant');
+
+        } catch (Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
 }

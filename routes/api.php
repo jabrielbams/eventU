@@ -24,6 +24,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Logout
     Route::post('/logout', [AuthController::class, 'apiLogout']);
 
+    // Event registration (for all authenticated users)
+    Route::post('/events/{id}/register', [EventController::class, 'registerForEvent']);
+
     // Organizer-only API routes
     Route::middleware(CheckUserRole::class.':organizer')->group(function () {
         // Event CRUD

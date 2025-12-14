@@ -387,5 +387,47 @@ class EventController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-}
 
+    /**
+     * Register the authenticated user for an event.
+     */
+    public function registerForEvent($id)
+    {
+        try {
+            $event = Event::findOrFail($id);
+            $user = Auth::user();
+
+            // Check if event is published
+            if ($event->status !== 'published') {
+                return response()->json([
+                    'message' => 'Event ini belum dipublikasikan'
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
+            // Check if already registered
+            if ($event->users()->where('user_id', $user->id)->exists()) {
+                return response()->json([
+                    'message' => 'Anda sudah terdaftar di event ini'
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
+            // Register user
+            $event->users()->attach($user->id);
+
+            return response()->json([
+                'message' => 'Berhasil mendaftar ke event',
+                'data' => new EventResource($event)
+            ], Response::HTTP_OK);
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Event tidak ditemukan'
+            ], Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Gagal mendaftar ke event',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+}
