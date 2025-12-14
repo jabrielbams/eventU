@@ -12,21 +12,51 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // 1. Fetch Assigned/Joined Events (The "Mission Roster")
-        // Assuming relationship 'events' exists for joined events
-        $assignedEvents = $user->events()->with('category')->orderBy('date', 'asc')->get();
+        if ($user->isStudent()) {
+            // For students: Show registered events ordered by closest date
+            $assignedEvents = $user->events()
+                ->with('category')
+                ->where('date', '>=', now())
+                ->orderBy('date', 'asc')
+                ->limit(5)
+                ->get();
 
-        // 2. Urgent: Next Mission (Closest Upcoming Event)
-        $nextEvent = $user->events()
-            ->where('date', '>=', now())
-            ->orderBy('date', 'asc')
-            ->first();
+            // Next upcoming event
+            $nextEvent = $assignedEvents->first();
 
-        // Calculate days remaining if event exists
-        $daysRemaining = null;
-        if ($nextEvent) {
-             $daysRemaining = ceil(now()->diffInDays($nextEvent->date, false));
-             if ($daysRemaining < 0) $daysRemaining = 0; // Should be handled by query, but safe fallbacks
+            // Calculate days remaining if event exists
+            $daysRemaining = null;
+            if ($nextEvent) {
+                $daysRemaining = ceil(now()->diffInDays($nextEvent->date, false));
+                if ($daysRemaining < 0) $daysRemaining = 0;
+            }
+
+            $ctaRoute = 'events.index';
+            $ctaText = 'Temukan Semua Event';
+
+        } else {
+            // For organizers: Show created events
+            $assignedEvents = Event::where('user_id', $user->id)
+                ->with(['category', 'users'])
+                ->orderBy('created_at', 'desc')
+                ->limit(5)
+                ->get();
+
+            // Next upcoming event from created events
+            $nextEvent = Event::where('user_id', $user->id)
+                ->where('date', '>=', now())
+                ->orderBy('date', 'asc')
+                ->first();
+
+            // Calculate days remaining if event exists
+            $daysRemaining = null;
+            if ($nextEvent) {
+                $daysRemaining = ceil(now()->diffInDays($nextEvent->date, false));
+                if ($daysRemaining < 0) $daysRemaining = 0;
+            }
+
+            $ctaRoute = 'organizer.events';
+            $ctaText = 'Lihat Semua Event';
         }
 
         $accountHealth = 'ACTIVE';
@@ -36,7 +66,9 @@ class DashboardController extends Controller
             'assignedEvents',
             'nextEvent',
             'daysRemaining',
-            'accountHealth'
+            'accountHealth',
+            'ctaRoute',
+            'ctaText'
         ));
     }
 }
