@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'organization_id',
     ];
 
     /**
@@ -48,9 +49,11 @@ class User extends Authenticatable
         ];
     }
 
-    public function organization()
+    public function organizations()
     {
-        return $this->hasOne(Organization::class);
+        return $this->belongsToMany(Organization::class, 'organization_user')
+            ->withPivot('status')
+            ->withTimestamps();
     }
 
     public function isOrganizer(): bool
