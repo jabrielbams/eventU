@@ -23,25 +23,25 @@
             <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
                 <div>
                     <h1 class="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-2">
-                        Manage Registrants
+                        Manajemen Peserta
                     </h1>
                     <p class="text-lg font-bold text-gray-600">
                         {{ $event->title }}
                     </p>
                 </div>
                 <a href="{{ route('events.show', $event->id) }}" class="neo-button-default">
-                    &larr; Back to Event
+                    &larr;  Kembali ke Detail Event
                 </a>
             </div>
 
             <!-- Event Info Summary -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 border-t-[3px] border-telkom-black">
                 <div class="bg-gray-100 p-4 border-2 border-telkom-black">
-                    <p class="text-xs font-bold uppercase text-gray-600 mb-1">Total Registrants</p>
+                    <p class="text-xs font-bold uppercase text-gray-600 mb-1">Total Peserta</p>
                     <p class="text-3xl font-black">{{ is_countable($registrants) ? count($registrants) : 0 }}</p>
                 </div>
                 <div class="bg-gray-100 p-4 border-2 border-telkom-black">
-                    <p class="text-xs font-bold uppercase text-gray-600 mb-1">Event Date</p>
+                    <p class="text-xs font-bold uppercase text-gray-600 mb-1">Tanggal Event</p>
                     <p class="text-xl font-black">{{ $event->date->format('d M Y') }}</p>
                 </div>
                 <div class="bg-gray-100 p-4 border-2 border-telkom-black">
@@ -62,7 +62,7 @@
         <!-- Registrants List -->
         <div class="neo-box bg-white p-8">
             <h2 class="text-2xl font-black uppercase mb-6 pb-4 border-b-[3px] border-telkom-black">
-                📋 Registered Users
+                Peserta Terdaftar
             </h2>
 
             @if(is_array($registrants) && count($registrants) > 0)
@@ -74,7 +74,6 @@
                                 <th class="text-left p-4 font-black uppercase border-r-2 border-white">#</th>
                                 <th class="text-left p-4 font-black uppercase border-r-2 border-white">Name</th>
                                 <th class="text-left p-4 font-black uppercase border-r-2 border-white">Email</th>
-                                <th class="text-left p-4 font-black uppercase border-r-2 border-white">Role</th>
                                 <th class="text-left p-4 font-black uppercase border-r-2 border-white">Registered At</th>
                                 <th class="text-left p-4 font-black uppercase">Actions</th>
                             </tr>
@@ -85,11 +84,6 @@
                                     <td class="p-4 font-bold">{{ $index + 1 }}</td>
                                     <td class="p-4 font-bold">{{ $registrant['name'] ?? 'N/A' }}</td>
                                     <td class="p-4">{{ $registrant['email'] ?? 'N/A' }}</td>
-                                    <td class="p-4">
-                                        <span class="inline-block px-2 py-1 text-xs font-bold uppercase bg-blue-500 text-white border border-telkom-black">
-                                            {{ $registrant['role'] ?? 'user' }}
-                                        </span>
-                                    </td>
                                     <td class="p-4 font-bold">{{ $registrant['registered_at'] ?? 'N/A' }}</td>
                                     <td class="p-4">
                                         <form method="POST" action="{{ route('events.registrants.remove', ['eventId' => $event->id, 'userId' => $registrant['id']]) }}"
@@ -97,7 +91,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="bg-telkom-red text-white px-3 py-2 text-sm font-bold uppercase border-2 border-telkom-black hover:bg-red-700 transition-colors">
-                                                🗑 Remove
+                                                Hapus Peserta
                                             </button>
                                         </form>
                                     </td>
@@ -113,23 +107,20 @@
                         <div class="neo-box bg-white p-4">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-xs font-bold uppercase text-gray-600">Registrant #{{ $index + 1 }}</p>
+                                    <p class="text-xs font-bold uppercase text-gray-600">Peserta #{{ $index + 1 }}</p>
                                     <h3 class="text-xl font-black uppercase">{{ $registrant['name'] ?? 'N/A' }}</h3>
                                 </div>
-                                <span class="inline-block px-2 py-1 text-xs font-bold uppercase bg-blue-500 text-white border border-telkom-black">
-                                    {{ $registrant['role'] ?? 'user' }}
-                                </span>
                             </div>
                             <div class="space-y-2 mb-4 text-sm">
                                 <p><span class="font-bold">Email:</span> {{ $registrant['email'] ?? 'N/A' }}</p>
-                                <p><span class="font-bold">Registered:</span> {{ $registrant['registered_at'] ?? 'N/A' }}</p>
+                                <p><span class="font-bold">Terdaftar:</span> {{ $registrant['registered_at'] ?? 'N/A' }}</p>
                             </div>
                             <form method="POST" action="{{ route('events.registrants.remove', ['eventId' => $event->id, 'userId' => $registrant['id']]) }}"
                                   onsubmit="return confirm('Are you sure you want to remove this registrant?')">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="w-full bg-telkom-red text-white px-4 py-3 font-bold uppercase border-2 border-telkom-black hover:bg-red-700 transition-colors">
-                                    🗑 Remove Registrant
+                                    Hapus Peserta
                                 </button>
                             </form>
                         </div>
@@ -139,18 +130,17 @@
                 <!-- Export Actions -->
                 <div class="mt-8 pt-6 border-t-[3px] border-telkom-black flex flex-wrap gap-4">
                     <button onclick="window.print()" class="neo-button-default bg-telkom-black text-white">
-                        🖨 Print List
+                        Print List Peserta
                     </button>
                     <button onclick="exportToCSV()" class="neo-button-default bg-green-600 text-white">
-                        📥 Export CSV
+                        Export CSV
                     </button>
                 </div>
             @else
                 <!-- Empty State -->
                 <div class="text-center py-16">
-                    <div class="text-6xl mb-4">📭</div>
-                    <h3 class="text-3xl font-black uppercase mb-2">No Registrants Yet</h3>
-                    <p class="text-gray-600 font-bold">No one has registered for this event.</p>
+                    <h3 class="text-3xl font-black uppercase mb-2">Belum Ada Peserta</h3>
+                    <p class="text-gray-600 font-bold">Belum ada yang mendaftar untuk acara ini.</p>
                 </div>
             @endif
         </div>

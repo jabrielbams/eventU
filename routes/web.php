@@ -31,6 +31,8 @@ Route::middleware(AuthenticateWithToken::class)->group(function () {
 
     // Organizer-only routes
     Route::middleware(CheckUserRole::class.':organizer')->group(function () {
+        Route::get('/organizer/events', [EventController::class, 'organizerEvents'])->name('organizer.events');
+
         Route::post('/events', [EventController::class, 'store'])->name('events.store');
 
         Route::get('/events/create', function () {

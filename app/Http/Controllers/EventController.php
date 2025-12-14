@@ -19,7 +19,7 @@ class EventController extends Controller
     {
         try {
             $apiController = new ApiEventController();
-            
+
             // Check if user is filtering by bookmarks
             if ($request->input('category') === 'bookmark') {
                 $response = $apiController->getBookmarkedEvents($request);
@@ -242,6 +242,42 @@ class EventController extends Controller
 
         } catch (Exception $e) {
             return redirect()->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Display all events created by the organizer.
+     */
+    public function organizerEvents(Request $request)
+    {
+        try {
+            $user = Auth::user();
+
+            $query = Event::where('user_id', $user->id)
+                ->with(['category', 'organization', 'users']);
+
+            // Search functionality
+            if ($request->has('search')) {
+                $search = $request->input('search');
+                $query->where(function ($q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%")
+                      ->orWhere('description', 'like', "%{$search}%")
+                      ->orWhere('location', 'like', "%{$search}%");
+                });
+            }
+
+            // Filter by status
+            if ($request->has('status') && $request->input('status') !== 'all') {
+                $query->where('status', $request->input('status'));
+            }
+
+            $events = $query->orderBy('created_at', 'desc')->paginate(10);
+            $categories = Category::select('id', 'name', 'slug')->get();
+
+            return view('organizer.events', compact('events', 'categories'));
+        } catch (Exception $e) {
+            return redirect()->route('dashboard')
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
