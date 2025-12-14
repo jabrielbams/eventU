@@ -26,9 +26,8 @@ Route::post('register', [AuthController::class, 'register'])->name('register.pos
 Route::middleware(AuthenticateWithToken::class)->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::get('dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    // Dashboard - Industrial Control Panel
+    Route::get('dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
     // Organizer-only routes
     Route::middleware(CheckUserRole::class.':organizer')->group(function () {
