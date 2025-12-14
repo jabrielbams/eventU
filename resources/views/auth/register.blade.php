@@ -1,116 +1,129 @@
-@extends('layouts.app')
+@extends('layouts.guest')
 
-@section('title', 'Join the Movement')
+@section('title', 'Registrasi Akun')
 
 @section('content')
-<div class="flex justify-center items-center py-10 w-full relative">
+    <div class="flex justify-center items-center py-10 w-full relative">
+        {{-- Card: Neo-Brutalism --}}
+        <div
+            class="w-full max-w-lg bg-white border-[3px] border-black shadow-[12px_12px_0px_0px_black] relative overflow-hidden">
 
-    <div class="w-full max-w-md">
-        <!-- Header -->
-        <div class="mb-8 text-center">
-            <h1 class="text-4xl md:text-5xl font-black italic tracking-tighter text-telkom-black uppercase drop-shadow-[3px_3px_0px_rgba(238,46,36,1)]">
-                Create Account
-            </h1>
-            <p class="mt-2 text-lg font-medium text-gray-600">Start your journey at Telkom University.</p>
-        </div>
+            {{-- Header: Hazard Strip --}}
+            <div
+                class="h-4 w-full bg-[repeating-linear-gradient(45deg,#ED1C24,#ED1C24_10px,#ffffff_10px,#ffffff_20px)] border-b-[3px] border-black">
+            </div>
 
-        <!-- Form Card -->
-        <div class="neo-box bg-white p-8 relative overflow-hidden">
-            <!-- Decorative Shape -->
-            <div class="absolute -top-10 -right-10 w-24 h-24 bg-telkom-red rounded-full border-4 border-telkom-black z-0"></div>
+            {{-- Header: Title Bar --}}
+            <div class="bg-black text-white p-4 text-center border-b-[3px] border-black">
+                <h1 class="text-xl font-bold uppercase tracking-widest">REGISTRASI AKUN</h1>
+            </div>
 
-            <form action="{{ route('register.post') }}" method="POST" class="relative z-10 space-y-6">
+            {{-- The Form --}}
+            <form id="registerForm" method="POST" action="{{ route('register.post') }}" class="p-8 space-y-5">
                 @csrf
 
-                <!-- Success Message -->
+                {{-- Success Message --}}
                 @if (session('success'))
-                <div class="neo-box bg-green-400 p-4 text-telkom-black font-bold mb-4">
-                    {{ session('success') }}
-                </div>
+                    <div
+                        class="bg-[#CCFF00] text-black p-3 border-[3px] border-black font-mono text-sm shadow-[4px_4px_0px_0px_black] mb-4 font-bold uppercase">
+                        {{ session('success') }}
+                    </div>
                 @endif
 
-                <!-- Error Message -->
-                @if (session('error'))
-                <div class="neo-box bg-telkom-red p-4 text-white font-bold mb-4">
-                    {{ session('error') }}
-                </div>
+                {{-- Error Message (Hidden) --}}
+                <div id="error-message" class="hidden"></div>
+
+                {{-- Server-side Errors --}}
+                @if ($errors->any())
+                    <div
+                        class="bg-[#ED1C24] text-white p-3 border-[3px] border-black font-mono text-sm shadow-[4px_4px_0px_0px_black] mb-4">
+                        @foreach ($errors->all() as $error)
+                            <p class="uppercase">ERROR: {{ $error }}</p>
+                        @endforeach
+                    </div>
                 @endif
 
-                <!-- Name -->
+                {{-- Input: Name --}}
                 <div>
-                    <label for="name" class="block text-lg font-bold mb-2 uppercase tracking-wide">Full Name</label>
-                    <input type="text" name="name" id="name"
-                        class="neo-input focus:ring-0"
-                        placeholder="John Doe"
-                        value="{{ old('name') }}">
-                    @error('name')
-                        <p class="text-telkom-red font-bold text-sm mt-1 bg-black text-white px-1 inline-block">{{ $message }}</p>
-                    @enderror
+                    <label for="name" class="block text-lg font-bold mb-1 uppercase tracking-wide">NAMA LENGKAP</label>
+                    <input type="text" name="name" id="name" required autofocus
+                        class="w-full border-[3px] border-black p-3 text-lg font-medium focus:outline-none focus:shadow-[4px_4px_0px_0px_#CCFF00] transition-shadow placeholder-gray-500"
+                        placeholder="Nama Mahasiswa / Organisasi" value="{{ old('name') }}">
                 </div>
 
-                <!-- Email -->
+                {{-- Input: Email --}}
                 <div>
-                    <label for="email" class="block text-lg font-bold mb-2 uppercase tracking-wide">University Email</label>
-                    <input type="email" name="email" id="email"
-                        class="neo-input focus:ring-0"
-                        placeholder="student@telkomuniversity.ac.id"
+                    <label for="email" class="block text-lg font-bold mb-1 uppercase tracking-wide">ALAMAT EMAIL</label>
+                    <input type="email" name="email" id="email" required
+                        class="w-full border-[3px] border-black p-3 text-lg font-medium focus:outline-none focus:shadow-[4px_4px_0px_0px_#CCFF00] transition-shadow"
                         value="{{ old('email') }}">
-                    @error('email')
-                        <p class="text-telkom-red font-bold text-sm mt-1 bg-black text-white px-1 inline-block">{{ $message }}</p>
-                    @enderror
                 </div>
 
-                <!-- Role Selection -->
+                {{-- Input: Role --}}
                 <div>
-                    <label class="block text-lg font-bold mb-2 uppercase tracking-wide">I am a...</label>
+                    <label for="role" class="block text-lg font-bold mb-1 uppercase tracking-wide">TIPE AKUN</label>
                     <div class="grid grid-cols-2 gap-4">
+                        <!-- Option: Student -->
                         <label class="cursor-pointer">
-                            <input type="radio" name="role" value="student" class="peer sr-only" {{ old('role', 'student') == 'student' ? 'checked' : '' }}>
-                            <div class="neo-box p-3 text-center hover:bg-gray-100 peer-checked:bg-telkom-black peer-checked:text-white transition-all">
-                                Student
+                            <input type="radio" name="role" value="student" class="peer sr-only"
+                                {{ old('role', 'student') == 'student' ? 'checked' : '' }}>
+                            <div
+                                class="w-full border-[3px] border-black p-3 text-center text-lg font-bold uppercase transition-all
+                                peer-checked:bg-black peer-checked:text-white peer-checked:shadow-[4px_4px_0px_0px_#CCFF00]
+                                hover:bg-gray-100">
+                                Mahasiswa
                             </div>
                         </label>
+                        <!-- Option: Organizer -->
                         <label class="cursor-pointer">
-                            <input type="radio" name="role" value="organizer" class="peer sr-only" {{ old('role') == 'organizer' ? 'checked' : '' }}>
-                            <div class="neo-box p-3 text-center hover:bg-gray-100 peer-checked:bg-telkom-black peer-checked:text-white transition-all">
-                                Organizer
+                            <input type="radio" name="role" value="organizer" class="peer sr-only"
+                                {{ old('role') == 'organizer' ? 'checked' : '' }}>
+                            <div
+                                class="w-full border-[3px] border-black p-3 text-center text-lg font-bold uppercase transition-all
+                                peer-checked:bg-black peer-checked:text-white peer-checked:shadow-[4px_4px_0px_0px_#CCFF00]
+                                hover:bg-gray-100">
+                                Panitia
                             </div>
                         </label>
                     </div>
-                    @error('role')
-                        <p class="text-telkom-red font-bold text-sm mt-1 bg-black text-white px-1 inline-block">{{ $message }}</p>
-                    @enderror
                 </div>
 
-                <!-- Password -->
+                {{-- Input: Password --}}
                 <div>
-                    <label for="password" class="block text-lg font-bold mb-2 uppercase tracking-wide">Password</label>
-                    <input type="password" name="password" id="password"
-                        class="neo-input focus:ring-0"
-                        placeholder="Password">
-                    @error('password')
-                        <p class="text-telkom-red font-bold text-sm mt-1 bg-black text-white px-1 inline-block">{{ $message }}</p>
-                    @enderror
+                    <label for="password" class="block text-lg font-bold mb-1 uppercase tracking-wide">KATA SANDI</label>
+                    <input type="password" name="password" id="password" required
+                        class="w-full border-[3px] border-black p-3 text-lg font-medium focus:outline-none focus:shadow-[4px_4px_0px_0px_#CCFF00] transition-shadow">
                 </div>
 
-                <!-- Confirm Password -->
+                {{-- Input: Confirm Password --}}
                 <div>
-                    <label for="password_confirmation" class="block text-lg font-bold mb-2 uppercase tracking-wide">Confirm Password</label>
-                    <input type="password" name="password_confirmation" id="password_confirmation"
-                        class="neo-input focus:ring-0"
-                        placeholder="Password">
+                    <label for="password_confirmation"
+                        class="block text-lg font-bold mb-1 uppercase tracking-wide">KONFIRMASI KATA SANDI</label>
+                    <input type="password" name="password_confirmation" id="password_confirmation" required
+                        class="w-full border-[3px] border-black p-3 text-lg font-medium focus:outline-none focus:shadow-[4px_4px_0px_0px_#CCFF00] transition-shadow">
                 </div>
 
-                <!-- Submit Button -->
-                <button type="submit" class="w-full neo-button text-xl tracking-widest mt-4">
-                    Register Access
+                {{-- Submit Button --}}
+                <button type="submit"
+                    class="w-full bg-black text-white border-[3px] border-black py-3 text-xl font-bold uppercase hover:bg-[#CCFF00] hover:text-black transition-colors">
+                    DAFTAR SEKARANG
                 </button>
 
-                <p class="text-center text-sm font-medium mt-4">
-                    Already have an account? <a href="{{ route('login') }}" class="underline decoration-2 decoration-telkom-red hover:text-telkom-red">Login Here</a>
-                </p>
+                {{-- Login Link --}}
+                <div class="text-center mt-4">
+                    <a href="{{ route('login') }}"
+                        class="text-black font-medium underline decoration-2 hover:text-[#ED1C24] transition-colors">
+                        Sudah punya akun? Masuk di sini
+                    </a>
+                </div>
+
             </form>
         </div>
     </div>
-</div>
+
+    {{-- 
+        NOTE: The request asked to "Keep the existing JavaScript block exactly as it is at the bottom of the file."
+        However, there was no JavaScript block at the bottom of the previous file. 
+        If one is needed, it should be added here.
+    --}}
 @endsection

@@ -41,22 +41,25 @@
                     $inactiveClass = 'bg-white text-black hover:bg-gray-100';
                 @endphp
 
-                <button type="submit" name="category" value="all"
-                    class="{{ $filterBtnBase }} {{ request('category', 'all') === 'all' ? $activeClass : $inactiveClass }}">
-                    All
-                </button>
-                <button type="submit" name="category" value="workshop"
-                    class="{{ $filterBtnBase }} {{ request('category') === 'workshop' ? $activeClass : $inactiveClass }}">
-                    Workshop
-                </button>
-                <button type="submit" name="category" value="seminar"
-                    class="{{ $filterBtnBase }} {{ request('category') === 'seminar' ? $activeClass : $inactiveClass }}">
-                    Seminar
-                </button>
-                <button type="submit" name="category" value="competition"
-                    class="{{ $filterBtnBase }} {{ request('category') === 'competition' ? $activeClass : $inactiveClass }}">
-                    Competition
-                </button>
+                <div class="relative w-full md:w-auto min-w-[250px]">
+                    <select name="category" onchange="this.form.submit()"
+                        class="appearance-none w-full bg-white border-[3px] border-black px-4 py-3 pr-10 font-bold uppercase shadow-[4px_4px_0px_0px_#000] focus:outline-none focus:shadow-[2px_2px_0px_0px_#000] focus:translate-x-[2px] focus:translate-y-[2px] transition-all cursor-pointer">
+                        <option value="all" {{ request('category') == 'all' ? 'selected' : '' }}>All Categories</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->slug }}"
+                                {{ request('category') == $category->slug ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <!-- Custom Chevron -->
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-black">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 stroke-[3px]" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="square" stroke-linejoin="miter" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                </div>
             </div>
         </form>
 
