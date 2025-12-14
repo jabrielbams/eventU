@@ -1,171 +1,110 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>TelyuEvents - @yield('title', 'Student Hub')</title>
+    <title>TelyuEvents - @yield('title', 'Dashboard')</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Courier+Prime:wght@400;700&display=swap"
+        rel="stylesheet">
 
-    <!-- Styles -->
-    <!-- Styles -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        user: ['Instrument Sans', 'ui-sans-serif', 'system-ui', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'],
+                        sans: ['Instrument Sans', 'sans-serif'],
+                        mono: ['Courier Prime', 'monospace'],
                     },
                     colors: {
-                        'telkom-red': '#EE2E24',
-                        'telkom-white': '#FFFFFF',
-                        'telkom-black': '#1A1A1A',
-                    },
-                    spacing: {
-                        'container': 'clamp(1rem, 5vw, 3rem)',
+                        'industrial-red': '#ED1C24',
+                        'industrial-black': '#000000',
+                        'industrial-white': '#FFFFFF',
                     }
                 }
             }
         }
     </script>
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .neo-box {
-                @apply border-[3px] border-telkom-black shadow-[5px_5px_0px_0px_#1A1A1A] transition-all duration-200 ease-in-out;
-            }
-            .neo-box-hover {
-                @apply hover:shadow-[2px_2px_0px_0px_#1A1A1A] hover:translate-x-[3px] hover:translate-y-[3px];
-            }
-            .neo-button {
-                @apply bg-telkom-red text-telkom-white font-bold uppercase py-3 px-6 border-[3px] border-telkom-black shadow-[4px_4px_0px_0px_#1A1A1A];
-            }
-            .neo-button:hover {
-                @apply shadow-[2px_2px_0px_0px_#1A1A1A] translate-x-[2px] translate-y-[2px];
-            }
-            .neo-button-default {
-                @apply bg-telkom-white text-telkom-black font-bold uppercase py-3 px-6 border-[3px] border-telkom-black shadow-[4px_4px_0px_0px_#1A1A1A];
-            }
-            .neo-button-default:hover {
-                @apply bg-gray-100 shadow-[2px_2px_0px_0px_#1A1A1A] translate-x-[2px] translate-y-[2px];
-            }
-            .neo-input {
-                @apply w-full border-[3px] border-telkom-black p-3 font-medium outline-none bg-telkom-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)];
-            }
-            .neo-input:focus {
-                @apply shadow-[6px_6px_0px_0px_#1A1A1A];
-            }
-        }
-    </style>
 
-    <!-- Alpine.js (CDN) -->
+    <!-- Alpine.js (From previous layout, preserved just in case) -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
-    <!-- Smooth Transitions (Optional CDN, can be enabled if requested) -->
-    <!-- <script src="https://unpkg.com/swup@4"></script> -->
 </head>
-<body class="bg-[#F0F0F0] text-telkom-black font-user antialiased min-h-screen flex flex-col">
 
-    <!-- Navbar -->
-    <nav class="bg-telkom-white border-b-4 border-telkom-black sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
-                <!-- Logo -->
-                <div class="flex-shrink-0 flex items-center">
-                    <a href="{{ url('/') }}" class="text-3xl font-bold tracking-tighter hover:text-telkom-red transition-colors">
-                        TELYU<span class="text-telkom-red">EVENTS</span>
-                    </a>
-                </div>
+<body class="font-sans text-industrial-black overflow-x-hidden m-0 p-0">
 
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex space-x-8 items-center">
-                    <a href="{{ route('events.index') }}" class="font-bold hover:underline decoration-4 underline-offset-4 decoration-telkom-red">Events</a>
-                    <a href="#" class="font-bold hover:underline decoration-4 underline-offset-4 decoration-telkom-red">Competitions</a>
-                
+    <!-- Background: Technical Graph Paper -->
+    <div
+        class="min-h-screen w-full bg-[#f2f2f2] bg-[radial-gradient(#000000_1px,transparent_1px)] [background-size:20px_20px]">
 
-                    <!-- Auth Buttons -->
-                    <!-- Auth Buttons -->
-                    @guest
-                        <a href="{{ route('login') }}" class="neo-button-default text-sm mr-4">Login</a>
-                        <a href="{{ route('register') }}" class="neo-button text-sm">
-                            Join Now
-                        </a>
-                    @endguest
+        <!-- THE SWITCHBOARD (Fixed Sidebar) -->
+        <aside
+            class="fixed top-0 bottom-0 left-0 w-[280px] bg-white border-r-[3px] border-black p-8 flex flex-col gap-6 z-50">
+            <!-- Decorative Line -->
+            <div
+                class="absolute top-0 right-[10px] bottom-0 w-[2px] bg-[repeating-linear-gradient(to_bottom,black_0,black_10px,transparent_10px,transparent_20px)] pointer-events-none">
+            </div>
 
+            <div class="mb-8 border-b-[3px] border-black pb-5">
+                <div class="text-[2.2rem] font-black uppercase leading-[0.9] tracking-tight">Dashboard</div>
+                <div class="mt-2 text-[0.8rem] font-bold uppercase tracking-widest text-gray-500">
                     @auth
-                        <a href="{{ route('dashboard') }}" class="font-bold hover:underline decoration-4 underline-offset-4 decoration-telkom-red">Dashboard</a>
-                        <a href="{{ route('profile.edit') }}" class="font-bold hover:underline decoration-4 underline-offset-4 decoration-telkom-red ml-4">My Identity</a>
-                        <form method="POST" action="{{ route('logout') }}" class="inline">
-                            @csrf
-                            <button type="submit" class="neo-button text-sm bg-telkom-black hover:bg-telkom-red">
-                                Logout
-                            </button>
-                        </form>
+                        ID:
+                        {{ Auth::user()->organization_id ? 'ORG-' . Auth::user()->organization_id : 'STD-' . str_pad(Auth::user()->id, 4, '0', STR_PAD_LEFT) }}
+                    @else
+                        ID: GUEST
                     @endauth
                 </div>
-
-                <!-- Mobile Menu Button (Alpine) -->
-                <div class="-mr-2 flex items-center md:hidden" x-data="{ open: false }">
-                    <button @click="open = !open" class="inline-flex items-center justify-center p-2 rounded-md text-telkom-black hover:bg-telkom-red hover:text-white focus:outline-none border-2 border-telkom-black shadow-[2px_2px_0px_#000]">
-                        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                            <path :class="{'hidden': open, 'inline-flex': !open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                            <path :class="{'hidden': !open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                    
-                    <!-- Mobile Menu Dropdown -->
-                    <div x-show="open" 
-                         @click.away="open = false"
-                         x-transition:enter="transition ease-out duration-200"
-                         x-transition:enter-start="opacity-0 transform -translate-y-2"
-                         x-transition:enter-end="opacity-100 transform translate-y-0"
-                         class="absolute top-20 right-0 w-full bg-telkom-white border-b-4 border-telkom-black p-4 shadow-lg flex flex-col space-y-4">
-                        <a href="#" class="font-bold text-lg">Events</a>
-                        <a href="#" class="font-bold text-lg">Competitions</a>
-                        @guest
-                            <a href="{{ route('login') }}" class="neo-button-default text-center">Login</a>
-                            <a href="{{ route('register') }}" class="neo-button text-center">Join Now</a>
-                        @endguest
-                        @auth
-                            <a href="{{ route('dashboard') }}" class="font-bold text-center">My Dashboard</a>
-                            <a href="{{ route('profile.edit') }}" class="font-bold text-center">My Identity</a>
-                            <form method="POST" action="{{ route('logout') }}" class="w-full">
-                                @csrf
-                                <button type="submit" class="neo-button text-center w-full bg-telkom-black hover:bg-telkom-red">Logout</button>
-                            </form>
-                        @endauth
-                        
-                    </div>
-                </div>
             </div>
-        </div>
-    </nav>
 
-    <!-- Main Content -->
-    <main class="flex-grow container mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <!-- Flash Messages -->
-        @if(session('success'))
-            <div x-data="{ show: true }" x-show="show" class="mb-6 neo-box bg-green-400 p-4 relative">
-                <div class="flex justify-between items-center">
-                    <p class="font-bold text-telkom-black text-lg">{{ session('success') }}</p>
-                    <button @click="show = false" class="font-bold hover:text-white">&times;</button>
-                </div>
+            <nav class="flex flex-col gap-6">
+                @php
+                    $btnClass =
+                        'block w-full p-4 border-[3px] border-black text-black font-black uppercase text-center transition-all duration-100 font-mono relative';
+                    $btnHover =
+                        'hover:bg-[#f0f0f0] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[8px_8px_0px_#000]';
+                    $btnActive = 'bg-black text-white shadow-none translate-x-[6px] translate-y-[6px]';
+                    $btnDefault = 'bg-white shadow-[6px_6px_0px_#000]';
+                @endphp
+
+                <a href="{{ route('dashboard') }}"
+                    class="{{ $btnClass }} {{ request()->routeIs('dashboard') ? $btnActive : $btnDefault . ' ' . $btnHover }}">::
+                    Beranda</a>
+                <a href="{{ route('events.index') }}"
+                    class="{{ $btnClass }} {{ request()->routeIs('events.*') ? $btnActive : $btnDefault . ' ' . $btnHover }}">::
+                    Cari Event</a>
+                <a href="{{ route('profile.edit') }}"
+                    class="{{ $btnClass }} {{ request()->routeIs('profile.*') ? $btnActive : $btnDefault . ' ' . $btnHover }}">::
+                    Profil Saya</a>
+            </nav>
+
+            <!-- Bottom Controls -->
+            <div class="mt-auto flex flex-col gap-3">
+                @auth
+                    <form method="POST" action="{{ route('logout') }}" class="w-full">
+                        @csrf
+                        <button type="submit"
+                            class="{{ $btnClass }} bg-black text-white shadow-[6px_6px_0px_#000] hover:bg-industrial-red hover:shadow-[8px_8px_0px_#000] hover:-translate-y-[2px] hover:-translate-x-[2px]">
+                            LOGOUT
+                        </button>
+                    </form>
+                @endauth
             </div>
-        @endif
+        </aside>
 
-        @yield('content')
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-telkom-black text-telkom-white py-8 border-t-4 border-telkom-black mt-auto">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="font-bold tracking-wider">&copy; {{ date('Y') }} TELYU EVENTS. BUILD BOLD.</p>
+        <!-- MAIN LAYOUT CONTENT -->
+        <div class="ml-[280px] p-12 w-[calc(100%-280px)]">
+            @yield('content')
         </div>
-    </footer>
+    </div>
 
 </body>
+
 </html>

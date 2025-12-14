@@ -10,7 +10,6 @@ class Organization extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
         'name',
         'description',
         'email',
@@ -19,9 +18,11 @@ class Organization extends Model
         'logo',
     ];
 
-    public function user()
+    public function users()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(User::class, 'organization_user')
+            ->withPivot('status')
+            ->withTimestamps();
     }
 
     public function events()

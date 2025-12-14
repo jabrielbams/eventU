@@ -1,373 +1,229 @@
 @extends('layouts.app')
 
-@section('title', 'Draft Event')
+@section('title', 'Buat Event Baru')
 
 @section('content')
-<style>
-    /* Neo-Brutalism Design System for Drafting Table */
-    .drafting-table {
-        border: 3px solid black;
-        box-shadow: 12px 12px 0px 0px #000000;
-        background-color: #ffffff;
-        max-width: 900px;
-        margin: 40px auto;
-        padding: 0;
-        position: relative;
-    }
+    <div class="flex justify-center items-center py-10 w-full relative px-4">
+        {{-- Card: Mission Manifesto --}}
+        <div
+            class="w-full max-w-4xl bg-white border-[3px] border-black shadow-[12px_12px_0px_0px_black] relative overflow-hidden">
 
-    .drafting-header {
-        background-color: #000000;
-        color: #ffffff;
-        padding: 20px;
-        font-family: 'Inter', sans-serif; /* Fallback */
-        text-transform: uppercase;
-        font-weight: 900;
-        font-size: 2rem;
-        border-bottom: 3px solid black;
-        letter-spacing: 2px;
-    }
+            {{-- Header: Hazard Strip --}}
+            <div
+                class="h-4 w-full bg-[repeating-linear-gradient(45deg,#ED1C24,#ED1C24_10px,#ffffff_10px,#ffffff_20px)] border-b-[3px] border-black">
+            </div>
 
-    .drafting-body {
-        padding: 40px;
-    }
+            {{-- Header: Title Bar --}}
+            <div class="bg-black text-white p-6 border-b-[3px] border-black">
+                <h1 class="text-3xl font-black uppercase leading-none tracking-tighter">BUAT EVENT BARU</h1>
+            </div>
 
-    /* Typography & Inputs */
-    .neo-input {
-        width: 100%;
-        border: 3px solid black;
-        border-radius: 0;
-        padding: 15px;
-        font-family: 'Courier New', Courier, monospace;
-        font-weight: bold;
-        font-size: 1.1rem;
-        background: #fff;
-        transition: all 0.2s ease;
-        box-sizing: border-box;
-    }
+            <form action="{{ route('events.store') }}" method="POST" id="create-event-form"
+                class="p-8 grid grid-cols-1 md:grid-cols-2 gap-6" enctype="multipart/form-data">
+                @csrf
 
-    .neo-input:focus {
-        outline: none;
-        background-color: #f0f0f0;
-        box-shadow: 4px 4px 0px 0px #000000;
-        transform: translate(-4px, -4px);
-    }
+                {{-- Global Error Alert --}}
+                @if (session('error'))
+                    <div
+                        class="col-span-1 md:col-span-2 bg-[#ED1C24] text-white p-3 border-[3px] border-black font-mono text-sm shadow-[4px_4px_0px_0px_black] uppercase font-bold">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
-    .neo-title {
-        font-size: 2.5rem;
-        margin-bottom: 30px;
-        border-width: 4px;
-    }
+                {{-- Judul Event (Full Width) --}}
+                <div class="col-span-1 md:col-span-2">
+                    <label for="title"
+                        class="block text-xl font-black mb-2 uppercase tracking-wide border-l-4 border-black pl-2">JUDUL
+                        EVENT</label>
+                    <input type="text" name="title" id="title" required
+                        class="w-full border-[3px] border-black p-4 text-2xl font-bold uppercase focus:outline-none focus:shadow-[8px_8px_0px_0px_#CCFF00] transition-shadow placeholder-gray-400"
+                        placeholder="MASUKKAN NAMA EVENT..." value="{{ old('title') }}">
+                    @error('title')
+                        <p class="text-[#ED1C24] font-bold text-sm mt-1 uppercase">{{ $message }}</p>
+                    @enderror
+                </div>
 
-    .neo-label {
-        font-family: 'Arial', sans-serif;
-        font-weight: 800;
-        text-transform: uppercase;
-        margin-bottom: 8px;
-        display: block;
-        font-size: 0.9rem;
-    }
+                {{-- Kategori --}}
+                <div>
+                    <label for="category_id"
+                        class="block text-lg font-bold mb-2 uppercase tracking-wide border-l-4 border-black pl-2">KATEGORI</label>
+                    <div class="relative">
+                        <select name="category_id" id="category_id" required
+                            class="w-full border-[3px] border-black p-3 text-lg font-medium appearance-none focus:outline-none focus:shadow-[4px_4px_0px_0px_#CCFF00] transition-shadow cursor-pointer bg-white uppercase">
+                            <option value="" disabled selected>Pilih Kategori</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}"
+                                    {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <div
+                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-black font-bold text-xl">
+                            ▼
+                        </div>
+                    </div>
+                    @error('category_id')
+                        <p class="text-[#ED1C24] font-bold text-sm mt-1 uppercase">{{ $message }}</p>
+                    @enderror
+                </div>
 
-    /* Grid Layout */
-    .drafting-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 20px;
-        margin-bottom: 30px;
-    }
+                {{-- Tanggal & Waktu (Split) --}}
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="date"
+                            class="block text-lg font-bold mb-2 uppercase tracking-wide border-l-4 border-black pl-2">TANGGAL</label>
+                        <input type="date" name="date" id="date" required
+                            class="w-full border-[3px] border-black p-3 text-lg font-medium focus:outline-none focus:shadow-[4px_4px_0px_0px_#CCFF00] transition-shadow"
+                            value="{{ old('date') }}">
+                    </div>
+                    <div>
+                        <label for="time"
+                            class="block text-lg font-bold mb-2 uppercase tracking-wide border-l-4 border-black pl-2">WAKTU</label>
+                        <input type="time" name="time" id="time" required
+                            class="w-full border-[3px] border-black p-3 text-lg font-medium focus:outline-none focus:shadow-[4px_4px_0px_0px_#CCFF00] transition-shadow"
+                            value="{{ old('time') }}">
+                    </div>
+                </div>
 
-    @media (max-width: 768px) {
-        .drafting-grid {
-            grid-template-columns: 1fr;
-        }
-    }
+                {{-- Lokasi / Tempat (Full Width) --}}
+                <div class="col-span-1 md:col-span-2">
+                    <label for="location"
+                        class="block text-lg font-bold mb-2 uppercase tracking-wide border-l-4 border-black pl-2">LOKASI /
+                        TEMPAT</label>
+                    <input type="text" name="location" id="location" required
+                        class="w-full border-[3px] border-black p-3 text-lg font-medium focus:outline-none focus:shadow-[4px_4px_0px_0px_#CCFF00] transition-shadow placeholder-gray-500"
+                        placeholder="Gedung Serbaguna, Zoom, dll." value="{{ old('location') }}">
+                    @error('location')
+                        <p class="text-[#ED1C24] font-bold text-sm mt-1 uppercase">{{ $message }}</p>
+                    @enderror
+                </div>
 
-    /* Image Drop Zone */
-    .drop-zone {
-        border: 3px dashed black;
-        background-color: #f8f8f8;
-        padding: 40px;
-        text-align: center;
-        cursor: pointer;
-        margin-bottom: 30px;
-        position: relative;
-        transition: background-color 0.2s;
-        min-height: 200px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
+                {{-- Deskripsi Lengkap --}}
+                <div class="col-span-1 md:col-span-2">
+                    <label for="description"
+                        class="block text-lg font-bold mb-2 uppercase tracking-wide border-l-4 border-black pl-2">DESKRIPSI
+                        LENGKAP</label>
+                    <textarea name="description" id="description" rows="6"
+                        class="w-full border-[3px] border-black p-3 text-lg font-mono focus:outline-none focus:shadow-[4px_4px_0px_0px_#CCFF00] transition-shadow placeholder-gray-500 h-40 resize-y"
+                        placeholder="Jelaskan detail misi event ini...">{{ old('description') }}</textarea>
+                    @error('description')
+                        <p class="text-[#ED1C24] font-bold text-sm mt-1 uppercase">{{ $message }}</p>
+                    @enderror
+                </div>
 
-    .drop-zone:hover {
-        background-color: #eee;
-    }
+                {{-- Upload Poster (The Drop Zone) --}}
+                <div class="col-span-1 md:col-span-2">
+                    <label class="block text-lg font-bold mb-2 uppercase tracking-wide border-l-4 border-black pl-2">POSTER
+                        EVENT</label>
+                    <div id="drop-zone"
+                        class="border-[3px] border-dashed border-black bg-gray-50 hover:bg-[#FFFACD] transition-colors cursor-pointer p-10 text-center relative flex flex-col items-center justify-center min-h-[200px] group">
+                        <input type="file" name="image" id="image-input" class="hidden" accept="image/*">
 
-    .drop-zone-text {
-        font-family: 'Courier New', Courier, monospace;
-        font-weight: 900;
-        font-size: 1.5rem;
-        text-transform: uppercase;
-        pointer-events: none;
-    }
+                        {{-- Default State --}}
+                        <div id="drop-zone-text"
+                            class="pointer-events-none flex flex-col items-center gap-2 {{ old('image') ? 'hidden' : '' }}">
+                            <svg class="w-12 h-12 text-black mb-2 group-hover:scale-110 transition-transform" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="3"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
+                            <span class="text-xl font-black uppercase text-gray-500">KLIK ATAU TARUH POSTER DI SINI</span>
+                        </div>
 
-    .drop-zone-preview {
-        max-width: 100%;
-        max-height: 300px;
-        object-fit: contain;
-        margin-top: 15px;
-        border: 2px solid black;
-        display: none;
-    }
+                        {{-- Preview Image --}}
+                        <img id="image-preview" src="#" alt="Poster Preview"
+                            class="hidden max-h-[300px] w-full object-contain border-[3px] border-black shadow-[4px_4px_0px_0px_black]">
+                    </div>
+                    @error('image')
+                        <p class="text-[#ED1C24] font-bold text-sm mt-1 uppercase">{{ $message }}</p>
+                    @enderror
+                </div>
 
-    /* Submit Button */
-    .btn-launch {
-        width: 100%;
-        background-color: #000000;
-        color: #ffffff;
-        border: 3px solid black;
-        padding: 20px;
-        font-size: 1.5rem;
-        font-weight: 900;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-family: 'Arial Black', sans-serif;
-    }
+                {{-- Action Buttons --}}
+                <div class="col-span-1 md:col-span-2 flex flex-col md:flex-row gap-4 mt-4">
+                    <button type="submit"
+                        class="flex-1 bg-black text-white border-[3px] border-black py-4 text-xl font-black uppercase hover:bg-[#ED1C24] hover:shadow-[4px_4px_0px_0px_black] transition-all">
+                        PUBLIKASIKAN EVENT
+                    </button>
+                    <a href="{{ route('dashboard') }}"
+                        class="flex-1 bg-white text-black border-[3px] border-black py-4 text-xl font-bold uppercase text-center hover:bg-gray-200 transition-colors">
+                        BATAL
+                    </a>
+                </div>
 
-    .btn-launch:hover {
-        background-color: #EE2E24; /* Telkom Red */
-        color: #ffffff;
-        box-shadow: 8px 8px 0px 0px #000000;
-        transform: translate(-4px, -4px);
-    }
-
-    /* Sticky Note Error */
-    .sticky-error {
-        background-color: #CCFF00; /* Neon Yellow */
-        color: #ff0000;
-        padding: 10px 15px;
-        font-family: 'Brush Script MT', 'Comic Sans MS', cursive; /* Handwritten feel */
-        font-size: 1.2rem;
-        position: absolute;
-        z-index: 10;
-        box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        transform: rotate(-2deg);
-        border: 1px solid #e0e0e0;
-        margin-top: 5px;
-        max-width: 250px;
-        display: none; /* Hidden by default */
-    }
-
-    .sticky-error::after {
-        content: '';
-        position: absolute;
-        bottom: -5px;
-        right: 5px;
-        width: 0;
-        height: 0;
-        border-left: 10px solid transparent;
-        border-right: 10px solid transparent;
-        border-top: 10px solid #CCFF00;
-        transform: rotate(3deg);
-    }
-    
-    .input-group {
-        position: relative;
-        margin-bottom: 20px;
-    }
-</style>
-
-<div class="drafting-table">
-    <div class="drafting-header">
-        PUBLISH NEW EVENT
+            </form>
+        </div>
     </div>
-    
-    <div class="drafting-body">
-        <form id="create-event-form">
-            <!-- Title -->
-            <div class="input-group">
-                <input type="text" name="title" class="neo-input neo-title" placeholder="ENTER EVENT TITLE..." required>
-                <div class="sticky-error" id="error-title"></div>
-            </div>
 
-            <!-- Meta Grid -->
-            <div class="drafting-grid">
-                <!-- Category -->
-                <div class="input-group">
-                    <label class="neo-label">Category</label>
-                    <select name="category_id" class="neo-input" required>
-                        <option value="" disabled selected>SELECT TYPE</option>
-                        @foreach($categories as $category)
-                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                        @endforeach
-                    </select>
-                    <div class="sticky-error" id="error-category_id"></div>
-                </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const dropZone = document.getElementById("drop-zone");
+            const imageInput = document.getElementById("image-input");
+            const imagePreview = document.getElementById("image-preview");
+            const dropZoneText = document.getElementById("drop-zone-text");
 
-                <!-- Date -->
-                <div class="input-group">
-                    <label class="neo-label">Date</label>
-                    <input type="date" name="date" class="neo-input" required>
-                    <div class="sticky-error" id="error-date"></div>
-                </div>
-
-                <!-- Time -->
-                <div class="input-group">
-                    <label class="neo-label">Time</label>
-                    <input type="time" name="time" class="neo-input" required>
-                    <div class="sticky-error" id="error-time"></div>
-                </div>
-            </div>
-
-            <!-- Location -->
-            <div class="input-group">
-                <label class="neo-label">Location</label>
-                <input type="text" name="location" class="neo-input" placeholder="VENUE OR LINK" required>
-                <div class="sticky-error" id="error-location"></div>
-            </div>
-
-            <!-- Image Upload -->
-            <div class="input-group">
-                <label class="neo-label">Event Poster</label>
-                <input type="file" name="image" id="image-input" class="hidden" accept="image/*" style="display:none">
-                <div class="drop-zone" id="drop-zone">
-                    <div class="drop-zone-text">DROP POSTER HERE</div>
-                    <img id="image-preview" class="drop-zone-preview" alt="Preview">
-                </div>
-                <div class="sticky-error" id="error-image"></div>
-            </div>
-
-            <!-- Description -->
-            <div class="input-group">
-                <label class="neo-label">Manifesto (Description)</label>
-                <textarea name="description" class="neo-input" rows="8" placeholder="// ENTER EVENT DETAILS..." style="resize: vertical;"></textarea>
-                <div class="sticky-error" id="error-description"></div>
-            </div>
-
-            <!-- Submit -->
-            <button type="submit" class="btn-launch">LAUNCH EVENT</button>
-        </form>
-    </div>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const form = document.getElementById('create-event-form');
-        const dropZone = document.getElementById('drop-zone');
-        const imageInput = document.getElementById('image-input');
-        const imagePreview = document.getElementById('image-preview');
-        const dropZoneText = document.querySelector('.drop-zone-text');
-
-        // --- Image Upload Logic ---
-        dropZone.addEventListener('click', () => imageInput.click());
-
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.style.backgroundColor = '#e0e0e0';
-            dropZone.style.borderStyle = 'solid';
-        });
-
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.style.backgroundColor = '#f8f8f8';
-            dropZone.style.borderStyle = 'dashed';
-        });
-
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.style.backgroundColor = '#f8f8f8';
-            dropZone.style.borderStyle = 'dashed';
-            
-            if (e.dataTransfer.files.length) {
-                imageInput.files = e.dataTransfer.files;
-                showPreview(e.dataTransfer.files[0]);
+            if (!dropZone || !imageInput || !imagePreview || !dropZoneText) {
+                return;
             }
-        });
 
-        imageInput.addEventListener('change', () => {
-            if (imageInput.files.length) {
-                showPreview(imageInput.files[0]);
-            }
-        });
+            dropZone.addEventListener("click", () => imageInput.click());
 
-        function showPreview(file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                imagePreview.src = e.target.result;
-                imagePreview.style.display = 'block';
-                dropZoneText.style.display = 'none';
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // --- Form Submission Logic ---
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // Clear previous errors
-            document.querySelectorAll('.sticky-error').forEach(el => {
-                el.style.display = 'none';
-                el.innerText = '';
+            imageInput.addEventListener("change", function() {
+                if (this.files && this.files[0]) {
+                    showPreview(this.files[0]);
+                }
             });
 
-            const formData = new FormData(form);
-            const submitBtn = document.querySelector('.btn-launch');
-            const originalBtnText = submitBtn.innerText;
-            
-            submitBtn.disabled = true;
-            submitBtn.innerText = 'LAUNCHING...';
+            ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+            });
 
-            try {
-                // Determine API endpoint - assuming relative path or explicit absolute
-                const response = await fetch('/api/events', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json',
-                         // Content-Type not set for FormData
-                    },
-                    body: formData
-                });
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
 
-                const data = await response.json();
+            ["dragenter", "dragover"].forEach((eventName) => {
+                dropZone.addEventListener(eventName, highlight, false);
+            });
 
-                if (response.status === 201) {
-                    alert("MISSION SUCCESS: Event Launched Successfully!");
-                    window.location.href = '/dashboard';
-                } else if (response.status === 403) {
-                    alert("STRICT WARNING: You do not have an Organization Profile yet. Access Denied.");
-                } else if (response.status === 422) {
-                    // Handle Validation Errors
-                    const errors = data.errors || data.message; // Laravel usually returns { message: "...", errors: { ... } }
-                    
-                    // Specific parsing for Laravel 422 response
-                    if (data.errors) {
-                         Object.entries(data.errors).forEach(([field, messages]) => {
-                            const errorEl = document.getElementById(`error-${field}`);
-                            if (errorEl) {
-                                errorEl.innerText = messages[0];
-                                errorEl.style.display = 'block';
-                                
-                                // Randomize rotation slightly for "sticky note" effect
-                                const rotation = Math.random() * 4 - 2; // -2 to 2 deg
-                                errorEl.style.transform = `rotate(${rotation}deg)`;
-                            }
-                        });
-                    } else {
-                         alert('Validation Error: ' + JSON.stringify(data));
-                    }
+            ["dragleave", "drop"].forEach((eventName) => {
+                dropZone.addEventListener(eventName, unhighlight, false);
+            });
 
-                } else {
-                    console.error("Unknown error:", data);
-                    alert("SYSTEM ERROR: Failed to obtain launch clearance.");
+            function highlight(e) {
+                dropZone.classList.add("bg-gray-200");
+                dropZone.classList.remove("bg-gray-50");
+            }
+
+            function unhighlight(e) {
+                dropZone.classList.remove("bg-gray-200");
+                dropZone.classList.add("bg-gray-50");
+            }
+
+            dropZone.addEventListener("drop", handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+
+                if (files && files[0]) {
+                    imageInput.files = files;
+                    showPreview(files[0]);
                 }
-            } catch (error) {
-                console.error("Network error:", error);
-                alert("NETWORK FAILURE: Communication down.");
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerText = originalBtnText;
+            }
+
+            function showPreview(file) {
+                if (file.type.startsWith("image/")) {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = function() {
+                        imagePreview.src = reader.result;
+                        imagePreview.classList.remove("hidden");
+                        dropZoneText.classList.add("hidden");
+                    };
+                }
             }
         });
-    });
-</script>
+    </script>
 @endsection
