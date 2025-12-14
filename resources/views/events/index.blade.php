@@ -20,18 +20,17 @@
             <div class="flex-grow min-w-[300px]">
                 <input type="text" name="search" class="neo-input uppercase placeholder:text-gray-400" placeholder="SEARCH EVENTS..." value="{{ request('search') }}">
             </div>
-            <div class="flex flex-wrap gap-2">
-                <button type="submit" name="category" value="all" class="neo-button-default {{ request('category', 'all') === 'all' ? 'bg-telkom-red text-white' : '' }}">
-                    All
-                </button>
-                <button type="submit" name="category" value="workshop" class="neo-button-default {{ request('category') === 'workshop' ? 'bg-telkom-red text-white' : '' }}">
-                    Workshop
-                </button>
-                <button type="submit" name="category" value="seminar" class="neo-button-default {{ request('category') === 'seminar' ? 'bg-telkom-red text-white' : '' }}">
-                    Seminar
-                </button>
-                <button type="submit" name="category" value="competition" class="neo-button-default {{ request('category') === 'competition' ? 'bg-telkom-red text-white' : '' }}">
-                    Competition
+            <div class="flex gap-2 items-stretch">
+                <select name="category" class="neo-input uppercase font-bold cursor-pointer" onchange="this.form.submit()">
+                    <option value="all" {{ request('category', 'all') === 'all' ? 'selected' : '' }}>ALL CATEGORIES</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category->slug }}" {{ request('category') === $category->slug ? 'selected' : '' }}>
+                            {{ strtoupper($category->name) }}
+                        </option>
+                    @endforeach
+                </select>
+                <button type="submit" class="neo-button-default bg-telkom-red text-white">
+                    FILTER
                 </button>
             </div>
         </form>
@@ -45,7 +44,7 @@
                         $day = $dateObj->format('d');
                         $month = strtoupper($dateObj->format('M'));
                         $categoryName = $event['category']['name'] ?? 'Event';
-                        $imageUrl = $event['image'] ? (str_starts_with($event['image'], 'http') ? $event['image'] : asset('storage/' . $event['image'])) : 'https://placehold.co/600x400';
+                        $imageUrl = $event['image_url'] ?? 'https://placehold.co/600x400';
                     @endphp
                     <div class="neo-box neo-box-hover bg-white flex flex-col overflow-hidden">
                         <!-- Image Container -->
@@ -93,9 +92,9 @@
         </div>
 
         <!-- Pagination -->
-        @if(isset($events['prev_page_url']) || isset($events['next_page_url']))
+        @if(isset($events['links']['prev']) || isset($events['links']['next']))
         <div class="flex justify-center gap-4">
-            @if(isset($events['prev_page_url']) && $events['prev_page_url'])
+            @if(isset($events['links']['prev']) && $events['links']['prev'])
                 <a href="{{ route('events.index', array_merge(request()->query(), ['page' => request('page', 1) - 1])) }}" class="neo-button-default">
                     Sebelumnya
                 </a>
@@ -103,7 +102,7 @@
                 <button class="neo-button-default opacity-50 cursor-not-allowed" disabled>Sebelumnya</button>
             @endif
 
-            @if(isset($events['next_page_url']) && $events['next_page_url'])
+            @if(isset($events['links']['next']) && $events['links']['next'])
                 <a href="{{ route('events.index', array_merge(request()->query(), ['page' => request('page', 1) + 1])) }}" class="neo-button-default">
                     Berikutnya
                 </a>

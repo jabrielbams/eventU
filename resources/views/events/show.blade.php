@@ -28,9 +28,7 @@
     <div class="max-w-6xl mx-auto">
         <div class="neo-box bg-white overflow-hidden grid grid-cols-1 md:grid-cols-5 gap-0">
             @php
-                $imageUrl = isset($event['image']) && $event['image']
-                    ? (str_starts_with($event['image'], 'http') ? $event['image'] : asset('storage/' . $event['image']))
-                    : 'https://placehold.co/800x1200';
+                $imageUrl = $event['image_url'] ?? 'https://placehold.co/800x1200';
                 $categoryName = $event['category']['name'] ?? 'Event';
                 $organizerName = $event['organization']['name'] ?? 'Unknown';
             @endphp
@@ -79,13 +77,24 @@
                     {{ $event['description'] }}
                 </p>
 
+                @if(auth()->user() && auth()->user()->role === 'organizer')
+                    <!-- Organizer Actions -->
+                    <div class="mb-6">
+                        <a href="{{ route('events.registrants', $event['id']) }}" class="block w-full text-center bg-telkom-white text-telkom-black font-bold uppercase py-3 px-6 border-[3px] border-telkom-black shadow-[4px_4px_0px_0px_#1A1A1A] hover:shadow-[2px_2px_0px_0px_#1A1A1A] hover:translate-x-[2px] hover:translate-y-[2px] transition-all mb-4">
+                            📋 Manage Registrants
+                        </a>
+                    </div>
+                @endif
+
                 <!-- Register Button -->
+                @if(auth()->user() && auth()->user()->role === 'student')
                 <form method="POST" action="{{ route('events.register', $event['id']) }}">
                     @csrf
-                    <button type="submit" class="neo-button w-full text-xl py-4">
+                    <button type="submit" class="bg-telkom-red text-telkom-white font-bold uppercase w-full text-xl py-4 border-[3px] border-telkom-black shadow-[4px_4px_0px_0px_#1A1A1A] hover:bg-red-700 hover:shadow-[2px_2px_0px_0px_#1A1A1A] hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
                         Daftar Event
                     </button>
                 </form>
+                @endif
             </div>
         </div>
     </div>

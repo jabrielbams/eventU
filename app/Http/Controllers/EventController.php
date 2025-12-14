@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Api\EventController as ApiEventController;
+use App\Models\Event;
+use App\Models\Category;
+use Exception;
 
 class EventController extends Controller
 {
@@ -14,31 +18,24 @@ class EventController extends Controller
     public function index(Request $request)
     {
         try {
-            $token = request()->cookie('access_token');
+            $apiController = new ApiEventController();
+            $response = $apiController->index($request);
 
-            $url = url('/api/events');
-            $params = [];
+            $httpResponse = $response->toResponse($request);
+            $responseData = json_decode($httpResponse->content(), true);
 
-            if ($request->has('page')) {
-                $params['page'] = $request->page;
-            }
-            if ($request->has('category') && $request->category !== 'all') {
-                $params['category'] = $request->category;
-            }
-            if ($request->has('search')) {
-                $params['search'] = $request->search;
-            }
+            $categories = Category::select('id', 'name', 'slug')->get();
 
-            $response = Http::withToken($token)->get($url, $params);
-
-            if ($response->successful()) {
-                $events = $response->json();
-                return view('events.index', compact('events'));
-            }
-
-            return view('events.index', ['events' => ['data' => []]]);
-        } catch (\Exception $e) {
-            return view('events.index', ['events' => ['data' => []]]);
+            return view('events.index', [
+                'events' => $responseData,
+                'categories' => $categories
+            ]);
+        } catch (Exception $e) {
+            $categories = Category::select('id', 'name', 'slug')->get();
+            return view('events.index', [
+                'events' => ['data' => [], 'links' => ['prev' => null, 'next' => null]],
+                'categories' => $categories
+            ]);
         }
     }
 
@@ -48,55 +45,60 @@ class EventController extends Controller
     public function show($id)
     {
         try {
-            $token = request()->cookie('access_token');
+            $apiController = new ApiEventController();
+            $request = new Request();
+            $response = $apiController->show($id);
 
-            $response = Http::withToken($token)->get(url("/api/events/{$id}"));
+            $httpResponse = $response->toResponse($request);
+            $responseData = json_decode($httpResponse->content(), true);
+            $event = $responseData['data'];
 
-            if ($response->successful()) {
-                $event = $response->json()['data'];
-                return view('events.show', compact('event'));
-            }
-
+            return view('events.show', compact('event'));
+        } catch (Exception $e) {
             return redirect()->route('events.index')
                 ->with('error', 'Event tidak ditemukan.');
-        } catch (\Exception $e) {
-            return redirect()->route('events.index')
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 
     /**
-     * Store a newly created event by calling the API.
+     * Store a newly created event by calling the API controller directly.
      */
     public function store(Request $request)
     {
         try {
-            $token = request()->cookie('access_token');
+            $apiController = new ApiEventController();
+            $response = $apiController->store($request);
 
-            $response = Http::withToken($token)
-                ->attach('image', $request->file('image') ? file_get_contents($request->file('image')->getRealPath()) : '', $request->file('image') ? $request->file('image')->getClientOriginalName() : '')
-                ->post(url('/api/events'), [
-                    'title' => $request->title,
-                    'description' => $request->description,
-                    'location' => $request->location,
-                    'date' => $request->date,
-                    'time' => $request->time,
-                    'category_id' => $request->category_id,
-                ]);
+            if ($response instanceof \Illuminate\Http\JsonResponse) {
+                $data = $response->getData(true);
+                $statusCode = $response->status();
 
-            if ($response->successful()) {
-                $data = $response->json();
-                return redirect()->route('events.show', $data['data']['id'])
-                    ->with('success', 'Event berhasil dibuat!');
-            } elseif ($response->status() === 422) {
-                return redirect()->back()
-                    ->withErrors($response->json('errors'))
-                    ->withInput();
-            } else {
-                return redirect()->back()
-                    ->with('error', $response->json('message', 'Gagal membuat event'))
-                    ->withInput();
+                if ($statusCode === 201) {
+                    $eventId = $data['data']['id'] ?? $data['id'] ?? null;
+
+                    if ($eventId) {
+                        return redirect()->route('events.show', $eventId)
+                            ->with('success', 'Event berhasil dibuat!');
+                    }
+
+                    return redirect()->route('events.index')
+                        ->with('success', 'Event berhasil dibuat!');
+
+                } elseif ($statusCode === 422) {
+                    return redirect()->back()
+                        ->withErrors($data['errors'] ?? [])
+                        ->withInput();
+                } else {
+                    return redirect()->back()
+                        ->with('error', $data['message'] ?? 'Gagal membuat event')
+                        ->withInput();
+                }
             }
+
+            return redirect()->back()
+                ->with('error', 'Response type: ' . get_class($response))
+                ->withInput();
+
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
@@ -135,36 +137,11 @@ class EventController extends Controller
                     ->with('error', $response->json('message', 'Gagal memperbarui event'))
                     ->withInput();
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return redirect()->back()
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
                 ->withInput();
         }
     }
 
-    /**
-     * Register for an event by calling the API.
-     */
-    public function register($id)
-    {
-        try {
-            $token = request()->cookie('access_token');
-
-            $response = Http::withToken($token)
-                ->post(url("/api/events/{$id}/register"));
-
-            if ($response->successful()) {
-                $data = $response->json();
-                return redirect()->route('events.show', $id)
-                    ->with('success', 'Registrasi berhasil! Ticket ID: ' . ($data['ticket_id'] ?? 'N/A'));
-            } else {
-                $message = $response->json('message', 'Gagal melakukan registrasi');
-                return redirect()->route('events.show', $id)
-                    ->with('error', $message);
-            }
-        } catch (\Exception $e) {
-            return redirect()->route('events.show', $id)
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
-    }
 }

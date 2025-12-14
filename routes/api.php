@@ -31,6 +31,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/events/{id}', [EventController::class, 'update']);
         Route::delete('/events/{id}', [EventController::class, 'destroy']);
 
+        // Event status management
+        Route::patch('/events/status', [EventController::class, 'updateStatus']);
+
+        // Event registrants management
+        Route::get('/events/{id}/registrants', [EventController::class, 'getRegistrants']);
+        Route::delete('/events/{eventId}/registrants/{userId}', [EventController::class, 'removeRegistrant']);
+
         // Organization CRUD
         Route::post('/organizations', [OrganizationController::class, 'store']);
         Route::put('/organizations/{id}', [OrganizationController::class, 'update']);
