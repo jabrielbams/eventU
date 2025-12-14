@@ -20,7 +20,7 @@
             <div class="flex flex-col items-center p-8 bg-telkom-white border-b-[3px] border-telkom-black">
                 <div class="relative w-32 h-32 mb-6">
                     <img id="avatarPreview"
-                         src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=000000&color=ffffff&size=128"
+                         src="{{ auth()->user()->profile_photo_path ? asset('storage/' . auth()->user()->profile_photo_path) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=000000&color=ffffff&size=128' }}"
                          alt="User Avatar"
                          class="w-full h-full object-cover border-[3px] border-telkom-black grayscale hover:grayscale-0 transition-all duration-300">
 
@@ -30,14 +30,14 @@
                             <circle cx="12" cy="13" r="4"></circle>
                         </svg>
                     </label>
-                    <input type="file" id="avatarInput" accept="image/*" class="hidden">
+                    <input type="file" id="avatarInput" name="profile_photo" accept="image/*" class="hidden" form="profileForm">
                 </div>
                 <h2 class="text-2xl font-black uppercase">{{ auth()->user()->name }}</h2>
                 <p class="text-sm font-bold opacity-60">Profile Kamu</p>
             </div>
 
             <!-- Form Section -->
-            <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="p-8 bg-telkom-white">
+            <form id="profileForm" action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="p-8 bg-telkom-white">
                 @csrf
                 @method('PUT')
 
