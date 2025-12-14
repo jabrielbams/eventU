@@ -64,7 +64,7 @@
 
     <!-- Alpine.js (CDN) -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
+
     <!-- Smooth Transitions (Optional CDN, can be enabled if requested) -->
     <!-- <script src="https://unpkg.com/swup@4"></script> -->
 </head>
@@ -85,18 +85,10 @@
                 <div class="hidden md:flex space-x-8 items-center">
                     <a href="{{ route('events.index') }}" class="font-bold hover:underline decoration-4 underline-offset-4 decoration-telkom-red">Events</a>
                     <a href="#" class="font-bold hover:underline decoration-4 underline-offset-4 decoration-telkom-red">Competitions</a>
-                
+
 
                     <!-- Auth Buttons -->
-                    <!-- Auth Buttons -->
-                    @guest
-                        <a href="{{ route('login') }}" class="neo-button-default text-sm mr-4">Login</a>
-                        <a href="{{ route('register') }}" class="neo-button text-sm">
-                            Join Now
-                        </a>
-                    @endguest
-
-                    @auth
+                    @if(Auth::check() || request()->cookie('access_token'))
                         <a href="{{ route('dashboard') }}" class="font-bold hover:underline decoration-4 underline-offset-4 decoration-telkom-red">Dashboard</a>
                         <a href="{{ route('profile.edit') }}" class="font-bold hover:underline decoration-4 underline-offset-4 decoration-telkom-red ml-4">My Identity</a>
                         <form method="POST" action="{{ route('logout') }}" class="inline">
@@ -105,7 +97,12 @@
                                 Logout
                             </button>
                         </form>
-                    @endauth
+                    @else
+                        <a href="{{ route('login') }}" class="neo-button-default text-sm mr-4">Login</a>
+                        <a href="{{ route('register') }}" class="neo-button text-sm">
+                            Join Now
+                        </a>
+                    @endif
                 </div>
 
                 <!-- Mobile Menu Button (Alpine) -->
@@ -116,9 +113,9 @@
                             <path :class="{'hidden': !open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
-                    
+
                     <!-- Mobile Menu Dropdown -->
-                    <div x-show="open" 
+                    <div x-show="open"
                          @click.away="open = false"
                          x-transition:enter="transition ease-out duration-200"
                          x-transition:enter-start="opacity-0 transform -translate-y-2"
@@ -126,19 +123,18 @@
                          class="absolute top-20 right-0 w-full bg-telkom-white border-b-4 border-telkom-black p-4 shadow-lg flex flex-col space-y-4">
                         <a href="#" class="font-bold text-lg">Events</a>
                         <a href="#" class="font-bold text-lg">Competitions</a>
-                        @guest
-                            <a href="{{ route('login') }}" class="neo-button-default text-center">Login</a>
-                            <a href="{{ route('register') }}" class="neo-button text-center">Join Now</a>
-                        @endguest
-                        @auth
+                        @if(Auth::check() || request()->cookie('access_token'))
                             <a href="{{ route('dashboard') }}" class="font-bold text-center">My Dashboard</a>
                             <a href="{{ route('profile.edit') }}" class="font-bold text-center">My Identity</a>
                             <form method="POST" action="{{ route('logout') }}" class="w-full">
                                 @csrf
                                 <button type="submit" class="neo-button text-center w-full bg-telkom-black hover:bg-telkom-red">Logout</button>
                             </form>
-                        @endauth
-                        
+                        @else
+                            <a href="{{ route('login') }}" class="neo-button-default text-center">Login</a>
+                            <a href="{{ route('register') }}" class="neo-button text-center">Join Now</a>
+                        @endif
+
                     </div>
                 </div>
             </div>
@@ -163,7 +159,7 @@
     <!-- Footer -->
     <footer class="bg-telkom-black text-telkom-white py-8 border-t-4 border-telkom-black mt-auto">
         <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="font-bold tracking-wider">&copy; {{ date('Y') }} TELYU EVENTS. BUILD BOLD.</p>
+            <p class="font-bold tracking-wider">&copy; {{ date('Y') }} Kelompok 8.</p>
         </div>
     </footer>
 
