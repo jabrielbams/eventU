@@ -14,9 +14,6 @@ class EventRegistrationController extends Controller
      */
     public function store(Request $request, $id)
     {
-        // Check if user is authenticated
-        // Using 'sanctum' guard if API, or default if session. 
-        // We will try to get the user from the request or Auth facade.
         $user = $request->user();
 
         if (!$user) {

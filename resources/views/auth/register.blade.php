@@ -121,9 +121,4 @@
         </div>
     </div>
 
-    {{-- 
-        NOTE: The request asked to "Keep the existing JavaScript block exactly as it is at the bottom of the file."
-        However, there was no JavaScript block at the bottom of the previous file. 
-        If one is needed, it should be added here.
-    --}}
 @endsection

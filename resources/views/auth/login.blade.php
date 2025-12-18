@@ -73,9 +73,4 @@
         </form>
     </div>
 
-    {{-- 
-        NOTE: The user requested to "Keep the existing JavaScript block exactly as it is at the bottom of the file."
-        However, upon inspection, the original file contained NO JavaScript block at the bottom.
-        The layout file (guest.blade.php) handles global scripts.
-    --}}
 @endsection
