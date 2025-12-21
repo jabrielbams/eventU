@@ -231,7 +231,7 @@
                             </div>
                             <p class="text-gray-700">{{ $review->comment }}</p>
                             
-                            @if(auth()->check() && (auth()->id() === $review->user_id || (auth()->user()->role === 'organizer' && $event['user_id'] === auth()->id())))
+                            @if(auth()->check() && (auth()->id() === $review->user_id || (auth()->user()->role === 'organizer' && ($event['user']['id'] ?? null) === auth()->id())))
                                 <div class="mt-3 flex gap-2">
                                     @if(auth()->id() === $review->user_id)
                                         <button type="button" onclick="toggleEditReview({{ $review->id }})" 
@@ -329,7 +329,7 @@
                             </div>
                             <p class="text-gray-700">{{ $comment->content }}</p>
                             
-                            @if(auth()->check() && (auth()->id() === $comment->user_id || (auth()->user()->role === 'organizer' && $event['user_id'] === auth()->id())))
+                            @if(auth()->check() && (auth()->id() === $comment->user_id || (auth()->user()->role === 'organizer' && ($event['user']['id'] ?? null) === auth()->id())))
                                 <div class="mt-3 flex gap-2">
                                     @if(auth()->id() === $comment->user_id)
                                         <button type="button" onclick="toggleEditComment({{ $comment->id }})" 
