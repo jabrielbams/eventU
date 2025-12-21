@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eventU - Team Presentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'telkom-red': '#EE2E24',
+                        'telkom-white': '#FFFFFF',
+                        'telkom-black': '#1A1A1A',
+                    },
+                    fontFamily: {
+                        sans: ['Courier New', 'monospace'],
+                    },
+                    boxShadow: {
+                        'neo': '5px 5px 0px 0px #1A1A1A',
+                        'neo-hover': '2px 2px 0px 0px #1A1A1A',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            background-image: radial-gradient(#1A1A1A 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .slide {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .slide.active {
+            display: flex;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fff; 
+            border-left: 2px solid #1A1A1A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #EE2E24; 
+            border: 2px solid #1A1A1A;
+        }
+        /* Code Syntax Highlighting Mock */
+        .code-keyword { color: #ff79c6; }
+        .code-function { color: #50fa7b; }
+        .code-string { color: #f1fa8c; }
+        .code-comment { color: #6272a4; }
+        
+        @media print {
+            body, html { 
+                height: auto !important; 
+                overflow: visible !important; 
+                background: white !important;
+            }
+            .slide { 
+                display: flex !important; 
+                opacity: 1 !important; 
+                transform: none !important;
+                page-break-after: always; 
+                height: 100vh !important;
+                border: none !important; 
+            }
+            .h-14, .h-16, #btn-prev, #btn-next, .dot { 
+                display: none !important; 
+            }
+            div[class*="h-[95vh]"] {
+                height: auto !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex items-center justify-center text-telkom-black overflow-hidden font-bold">
+
+    <!-- Main Container -->
+    <div class="relative w-full max-w-6xl h-[95vh] md:h-[85vh] bg-telkom-white border-[3px] border-telkom-black shadow-neo flex flex-col m-4">
+
+        <!-- Header -->
+        <div class="h-14 border-b-[3px] border-telkom-black flex items-center justify-between px-6 bg-telkom-red text-telkom-white shrink-0">
+            <div class="text-xl tracking-tighter">eventU_Deck_Final.pptx</div>
+            <div class="text-lg" id="slide-counter">1 / 15</div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="flex-1 overflow-hidden relative p-6 md:p-10 flex flex-col justify-center">
+
+            <!-- SLIDE 1: JUDUL SISTEM -->
+            <div class="slide active flex-col items-center justify-center text-center h-full w-full overflow-y-auto">
+                <div class="mb-4 inline-block bg-telkom-black text-telkom-white px-4 py-1 text-sm transform -rotate-2">
+                    PROJECT TUBES
+                </div>
+                <h1 class="text-6xl md:text-8xl mb-2 tracking-tighter text-telkom-red" style="text-shadow: 4px 4px 0px #1A1A1A;">eventU</h1>
+                <p class="text-lg md:text-xl max-w-2xl border-b-[3px] border-telkom-black pb-4 mb-6">
+                    Platform Manajemen dan Penemuan Acara Kampus Terpusat
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-left w-full max-w-3xl mt-4">
+                    <div class="border-[2px] border-telkom-black p-2 shadow-neo bg-white hover:bg-yellow-100 transition-colors">
+                        <p class="font-bold text-xs">Rizky Saputra Al Amir</p>
+                        <p class="font-mono text-telkom-red text-xs">102022430003</p>
+                    </div>
+                    <div class="border-[2px] border-telkom-black p-2 shadow-neo bg-white hover:bg-yellow-100 transition-colors">
+                        <p class="font-bold text-xs">Jabriel Bamasena J. R.</p>
+                        <p class="font-mono text-telkom-red text-xs">102022430030</p>
+                    </div>
+                    <div class="border-[2px] border-telkom-black p-2 shadow-neo bg-white hover:bg-yellow-100 transition-colors">
+                        <p class="font-bold text-xs">Muhammad Faizul Kamal</p>
+                        <p class="font-mono text-telkom-red text-xs">102022430037</p>
+                    </div>
+                    <div class="border-[2px] border-telkom-black p-2 shadow-neo bg-white hover:bg-yellow-100 transition-colors">
+                        <p class="font-bold text-xs">Kadek Galih Mahotama</p>
+                        <p class="font-mono text-telkom-red text-xs">102022430070</p>
+                    </div>
+                    <div class="border-[2px] border-telkom-black p-2 shadow-neo bg-white hover:bg-yellow-100 transition-colors md:col-span-2">
+                        <p class="font-bold text-xs">Aufaa Zhafir Wicaksana</p>
+                        <p class="font-mono text-telkom-red text-xs">102022400259</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 2: URGENSI -->
+            <div class="slide flex-col h-full w-full overflow-y-auto">
+                <h2 class="text-3xl md:text-4xl mb-6 bg-telkom-black text-telkom-white inline-block px-4 py-2 self-start transform -rotate-1 shadow-neo">
+                    #2 Urgensi
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4">
+                    <div class="border-[3px] border-telkom-black p-4 shadow-neo bg-white">
+                        <h3 class="text-lg bg-telkom-red text-white inline-block px-2 mb-2">Fragmentasi Info</h3>
+                        <p class="font-normal text-sm">Info acara tersebar (IG, WA, Poster) membuat mahasiswa sering ketinggalan info penting.</p>
+                    </div>
+                    <div class="border-[3px] border-telkom-black p-4 shadow-neo bg-white">
+                        <h3 class="text-lg bg-telkom-red text-white inline-block px-2 mb-2">Kesulitan Daftar</h3>
+                        <p class="font-normal text-sm">Proses manual/Google Form yang tidak terintegrasi menyulitkan tracking data.</p>
+                    </div>
+                    <div class="border-[3px] border-telkom-black p-4 shadow-neo bg-white">
+                        <h3 class="text-lg bg-telkom-red text-white inline-block px-2 mb-2">Jangkauan Sempit</h3>
+                        <p class="font-normal text-sm">Penyelenggara sulit menjangkau audiens di luar lingkaran sosial (circle) mereka.</p>
+                    </div>
+                    <div class="border-[3px] border-telkom-black p-4 shadow-neo bg-telkom-black text-white">
+                        <h3 class="text-lg bg-white text-telkom-black inline-block px-2 mb-2">Solusi: Sentralisasi</h3>
+                        <p class="font-normal text-sm">Dibutuhkan satu HUB terpusat untuk efisiensi total.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 3: TUJUAN -->
+            <div class="slide flex-col h-full w-full overflow-y-auto">
+                <h2 class="text-3xl md:text-4xl mb-6 bg-telkom-red text-telkom-white inline-block px-4 py-2 self-start transform rotate-1 border-[3px] border-telkom-black shadow-neo">
+                    #3 Tujuan
+                </h2>
+                <div class="space-y-3 max-w-4xl pb-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 shrink-0 bg-telkom-black text-white flex items-center justify-center text-xl border-[3px] border-telkom-black">1</div>
+                        <div class="border-[3px] border-telkom-black p-3 w-full shadow-[3px_3px_0px_0px_#1A1A1A] bg-white">
+                            <span class="bg-telkom-red text-white px-1 mr-2 text-sm">Sentralisasi</span> <span class="text-sm font-normal">Platform utama acara kampus.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 shrink-0 bg-white text-telkom-black flex items-center justify-center text-xl border-[3px] border-telkom-black">2</div>
+                        <div class="border-[3px] border-telkom-black p-3 w-full shadow-[3px_3px_0px_0px_#1A1A1A] bg-white">
+                            <span class="bg-telkom-red text-white px-1 mr-2 text-sm">Efisiensi</span> <span class="text-sm font-normal">Alat kelola status & pendaftar.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 shrink-0 bg-telkom-black text-white flex items-center justify-center text-xl border-[3px] border-telkom-black">3</div>
+                        <div class="border-[3px] border-telkom-black p-3 w-full shadow-[3px_3px_0px_0px_#1A1A1A] bg-white">
+                            <span class="bg-telkom-red text-white px-1 mr-2 text-sm">Akses Mudah</span> <span class="text-sm font-normal">Daftar, bookmark, review.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 4: CARA KERJA (Intro) -->
+            <div class="slide flex-col items-center justify-center text-center h-full w-full">
+                <h2 class="text-5xl md:text-6xl mb-6 bg-yellow-300 text-telkom-black inline-block px-6 py-4 border-[4px] border-telkom-black shadow-neo transform -rotate-2">
+                    #4 Cara Kerja Sistem
+                </h2>
+                <p class="text-xl">Overview Alur & Fitur Utama</p>
+            </div>
+
+            <!-- SLIDE 4.1: Ekosistem & Auth -->
+            <div class="slide flex-col h-full w-full overflow-y-auto">
+                <div class="border-b-[3px] border-telkom-black mb-4 w-full">
+                    <span class="bg-yellow-300 px-2 border-t-[3px] border-x-[3px] border-telkom-black text-sm">4.1 Ekosistem</span>
+                </div>
+                <h2 class="text-3xl mb-4">Ekosistem Pengguna & Autentikasi</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-full pb-4">
+                    <div class="border-[3px] border-telkom-black bg-white p-4 shadow-neo flex flex-col gap-3">
+                        <h3 class="text-lg bg-telkom-black text-white text-center py-1">Multi-Role Architecture</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-3">
+                                <div class="bg-blue-100 p-2 border-2 border-black">🎓</div>
+                                <div>
+                                    <h4 class="font-bold underline">Student</h4>
+                                    <p class="text-sm font-normal">Fokus: Penemuan acara, pendaftaran, sosial.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="bg-red-100 p-2 border-2 border-black">👮</div>
+                                <div>
+                                    <h4 class="font-bold underline">Organizer</h4>
+                                    <p class="text-sm font-normal">Fokus: Manajemen organisasi & acara.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <div class="border-[3px] border-telkom-black bg-white p-4 shadow-neo">
+                            <h3 class="text-lg bg-telkom-red text-white inline-block px-2 mb-2">🔐 Secure Auth</h3>
+                            <ul class="list-disc pl-5 text-sm font-normal space-y-1">
+                                <li><strong>Laravel Sanctum:</strong> Autentikasi berbasis token.</li>
+                                <li><strong>Validasi:</strong> Email unik & Enkripsi password.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 4.2: Manajemen Organisasi -->
+            <div class="slide flex-col h-full w-full overflow-y-auto">
+                <div class="border-b-[3px] border-telkom-black mb-4 w-full">
+                    <span class="bg-yellow-300 px-2 border-t-[3px] border-x-[3px] border-telkom-black text-sm">4.2 Organizer Hub</span>
+                </div>
+                <h2 class="text-3xl mb-4">Manajemen Organisasi</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 h-full pb-4">
+                    <!-- Card 1: Identitas -->
+                    <div class="border-[3px] border-telkom-black p-4 shadow-neo bg-white relative flex flex-col">
+                        <div class="absolute -top-3 -right-3 bg-telkom-red text-white w-8 h-8 flex items-center justify-center border-2 border-black font-bold">1</div>
+                        <h3 class="text-lg border-b-2 border-black pb-2 mb-3 font-bold">Identitas & Branding</h3>
+                        <p class="text-xs font-normal mb-3">Membangun kredibilitas entitas kampus melalui profil lengkap.</p>
+                        <ul class="text-xs space-y-2 font-mono bg-gray-50 p-2 border border-black flex-1">
+                            <li>> Nama & Logo</li>
+                            <li>> Deskripsi Visi/Misi</li>
+                            <li>> Kontak (Email/Telp)</li>
+                            <li>> Alamat Sekretariat</li>
+                        </ul>
+                    </div>
+
+                    <!-- Card 2: SDM -->
+                    <div class="border-[3px] border-telkom-black p-4 shadow-neo bg-white relative flex flex-col">
+                        <div class="absolute -top-3 -right-3 bg-telkom-red text-white w-8 h-8 flex items-center justify-center border-2 border-black font-bold">2</div>
+                        <h3 class="text-lg border-b-2 border-black pb-2 mb-3 font-bold">Manajemen SDM</h3>
+                        <p class="text-xs font-normal mb-3">Kontrol penuh atas siapa yang dapat mengelola acara organisasi.</p>
+                        <div class="bg-yellow-100 p-2 border-2 border-black text-xs font-normal mb-2">
+                            <strong>Approval Flow:</strong><br>
+                            User Request ➜ Pending ➜ Admin Approve/Reject
+                        </div>
+                        <div class="text-xs text-gray-500 mt-auto">
+                            *Mencegah akses tidak sah ke dashboard organisasi.
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Portofolio -->
+                    <div class="border-[3px] border-telkom-black p-4 shadow-neo bg-white relative flex flex-col">
+                        <div class="absolute -top-3 -right-3 bg-telkom-red text-white w-8 h-8 flex items-center justify-center border-2 border-black font-bold">3</div>
+                        <h3 class="text-lg border-b-2 border-black pb-2 mb-3 font-bold">Portofolio Acara</h3>
+                        <p class="text-xs font-normal mb-3">Sentralisasi seluruh kegiatan di bawah satu payung organisasi.</p>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2 text-xs border border-black p-1 bg-green-50">
+                                <span class="w-2 h-2 bg-green-500 rounded-full"></span> Active Events
+                            </div>
+                            <div class="flex items-center gap-2 text-xs border border-black p-1 bg-gray-50">
+                                <span class="w-2 h-2 bg-gray-500 rounded-full"></span> Past History
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 4.3: Event Lifecycle -->
+            <div class="slide flex-col h-full w-full overflow-y-auto">
+                <div class="border-b-[3px] border-telkom-black mb-4 w-full">
+                    <span class="bg-yellow-300 px-2 border-t-[3px] border-x-[3px] border-telkom-black text-sm">4.3 Lifecycle</span>
+                </div>
+                <h2 class="text-3xl mb-6">Siklus Hidup Acara</h2>
+                <div class="relative flex flex-col md:flex-row justify-between items-center gap-4 w-full pb-8">
+                    <div class="w-full md:w-1/3 border-[3px] border-telkom-black p-4 bg-white shadow-neo z-10">
+                        <div class="bg-gray-300 w-full h-2 mb-3 border border-black"></div>
+                        <h3 class="font-bold text-lg">1. Drafting</h3>
+                        <p class="text-xs font-normal mt-2">Input detail: Judul, Kategori, Lokasi.</p>
+                    </div>
+                    <div class="hidden md:block text-4xl">➜</div>
+                    <div class="w-full md:w-1/3 border-[3px] border-telkom-black p-4 bg-telkom-red text-white shadow-neo z-10">
+                        <div class="bg-white w-full h-2 mb-3 border border-black"></div>
+                        <h3 class="font-bold text-lg">2. Publishing</h3>
+                        <p class="text-xs font-normal mt-2">Status <span class="font-mono bg-black px-1">Published</span>. Muncul di Feed.</p>
+                    </div>
+                    <div class="hidden md:block text-4xl">➜</div>
+                    <div class="w-full md:w-1/3 border-[3px] border-telkom-black p-4 bg-telkom-black text-white shadow-neo z-10">
+                        <div class="bg-green-500 w-full h-2 mb-3 border border-white"></div>
+                        <h3 class="font-bold text-lg">3. Monitoring</h3>
+                        <p class="text-xs font-normal mt-2">Real-time registrants count.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 5: API ENDPOINTS -->
+            <div class="slide flex-col h-full w-full overflow-y-auto">
+                <div class="flex justify-between items-end border-b-[3px] border-telkom-black mb-4 pb-2">
+                    <h2 class="text-3xl md:text-4xl">#5 API Endpoints</h2>
+                    <span class="bg-black text-white px-2 text-sm font-mono">Laravel Routes</span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-full pb-4 text-sm">
+                    <!-- Auth -->
+                    <div class="border-[2px] border-telkom-black p-3 shadow-neo bg-white">
+                        <h4 class="bg-telkom-black text-white inline-block px-2 mb-2 text-xs">Auth & Users</h4>
+                        <ul class="font-mono space-y-1 text-xs">
+                            <li><span class="text-green-600 font-bold">POST</span> /api/register</li>
+                            <li><span class="text-green-600 font-bold">POST</span> /api/login</li>
+                            <li><span class="text-red-600 font-bold">POST</span> /api/logout</li>
+                        </ul>
+                    </div>
+
+                    <!-- Public -->
+                    <div class="border-[2px] border-telkom-black p-3 shadow-neo bg-white">
+                        <h4 class="bg-telkom-black text-white inline-block px-2 mb-2 text-xs">Public Data</h4>
+                        <ul class="font-mono space-y-1 text-xs">
+                            <li><span class="text-blue-600 font-bold">GET</span> /api/events</li>
+                            <li><span class="text-blue-600 font-bold">GET</span> /api/organizations</li>
+                        </ul>
+                    </div>
+
+                    <!-- Organizer -->
+                    <div class="border-[2px] border-telkom-black p-3 shadow-neo bg-white md:col-span-2">
+                        <h4 class="bg-telkom-red text-white inline-block px-2 mb-2 text-xs">Organizer (Protected)</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                            <div class="font-mono">
+                                <span class="text-green-600 font-bold">POST</span> /api/events<br>
+                                <span class="text-purple-600 font-bold">PUT</span> /api/events/{id}<br>
+                                <span class="text-red-600 font-bold">DEL</span> /api/events/{id}
+                            </div>
+                            <div class="font-mono">
+                                <span class="text-purple-600 font-bold">PATCH</span> /api/events/status<br>
+                                <span class="text-green-600 font-bold">POST</span> /api/organizations<br>
+                                <span class="text-blue-600 font-bold">GET</span> /api/events/{id}/registrants
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Student -->
+                    <div class="border-[2px] border-telkom-black p-3 shadow-neo bg-white md:col-span-2">
+                        <h4 class="bg-blue-600 text-white inline-block px-2 mb-2 text-xs">Student Actions</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                            <div class="font-mono">
+                                <span class="text-green-600 font-bold">POST</span> /api/events/{id}/register
+                            </div>
+                            <div class="font-mono">
+                                <span class="text-green-600 font-bold">POST</span> /api/events/{id}/bookmark
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 6.1: CRUD Jabriel -->
+            <div class="slide flex-col h-full w-full overflow-y-auto">
+                <div class="border-b-[3px] border-telkom-black mb-4 w-full flex justify-between items-center">
+                    <span class="bg-yellow-300 px-2 border-t-[3px] border-x-[3px] border-telkom-black text-sm">6.1 CRUD Event</span>
+                    <span class="text-xs font-bold">Jabriel Bamasena Javier Rahardjanto</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+                    <!-- Code -->
+                    <div class="bg-[#282a36] p-4 border-[3px] border-telkom-black shadow-neo overflow-hidden text-xs font-mono text-white">
+                        <div class="mb-2 text-gray-400">// EventController.php</div>
+                        <span class="code-keyword">public function</span> <span class="code-function">store</span>(Request $request) {<br>
+                        &nbsp;&nbsp;$validated = $request-><span class="code-function">validate</span>([<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">'title'</span> => <span class="code-string">'required'</span>,<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">'date'</span> => <span class="code-string">'required|date'</span>,<br>
+                        &nbsp;&nbsp;]);<br><br>
+                        &nbsp;&nbsp;$event = Event::<span class="code-function">create</span>([<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">'title'</span> => $request->title,<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">'user_id'</span> => Auth::<span class="code-function">id</span>(),<br>
+                        &nbsp;&nbsp;]);<br>
+                        &nbsp;&nbsp;<span class="code-keyword">return</span> redirect()-><span class="code-function">route</span>(<span class="code-string">'events.index'</span>);<br>
+                        }
+                    </div>
+                    <!-- Result Mockup -->
+                    <div class="bg-white p-4 border-[3px] border-telkom-black shadow-neo flex flex-col">
+                        <div class="border-b-2 border-gray-200 pb-2 mb-2 font-bold">Create New Event</div>
+                        <div class="space-y-2">
+                            <input type="text" value="Seminar Teknologi 2025" class="w-full border-2 border-black p-1 text-sm" disabled>
+                            <input type="date" value="2025-12-20" class="w-full border-2 border-black p-1 text-sm" disabled>
+                            <div class="h-20 border-2 border-black bg-gray-50 p-1 text-xs text-gray-500">Description...</div>
+                            <button class="bg-telkom-red text-white px-4 py-1 text-sm border-2 border-black shadow-[2px_2px_0px_0px_#000]">Submit Event</button>
+                        </div>
+                        <div class="mt-4 p-2 bg-green-100 border border-green-500 text-xs text-green-700">
+                            ✓ Event created successfully!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 6.2: CRUD Rizky -->
+            <div class="slide flex-col h-full w-full overflow-y-auto">
+                <div class="border-b-[3px] border-telkom-black mb-4 w-full flex justify-between items-center">
+                    <span class="bg-yellow-300 px-2 border-t-[3px] border-x-[3px] border-telkom-black text-sm">6.2 CRUD Announcement</span>
+                    <span class="text-xs font-bold">Rizky Saputra Al Amir</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+                    <!-- Code -->
+                    <div class="bg-[#282a36] p-4 border-[3px] border-telkom-black shadow-neo overflow-hidden text-xs font-mono text-white">
+                        <div class="mb-2 text-gray-400">// AnnouncementController.php</div>
+                        <span class="code-keyword">public function</span> <span class="code-function">index</span>() {<br>
+                        &nbsp;&nbsp;$announcements = Announcement::<span class="code-function">with</span>(<span class="code-string">'event'</span>)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;-><span class="code-function">orderBy</span>(<span class="code-string">'created_at'</span>, <span class="code-string">'desc'</span>)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;-><span class="code-function">get</span>();<br><br>
+                        &nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-function">view</span>(<span class="code-string">'announcements.index'</span>, compact(<span class="code-string">'announcements'</span>));<br>
+                        }
+                    </div>
+                    <!-- Result Mockup -->
+                    <div class="bg-white p-4 border-[3px] border-telkom-black shadow-neo flex flex-col">
+                        <div class="border-b-2 border-gray-200 pb-2 mb-2 font-bold">📢 Latest Updates</div>
+                        <div class="space-y-2">
+                            <div class="border-2 border-black p-2 bg-yellow-50">
+                                <div class="flex justify-between text-xs font-bold">
+                                    <span>Perubahan Jadwal</span>
+                                    <span class="text-gray-500">2m ago</span>
+                                </div>
+                                <p class="text-xs mt-1">Acara diundur ke jam 10:00 WIB.</p>
+                                <div class="flex gap-2 mt-2">
+                                    <button class="bg-blue-500 text-white px-2 py-0.5 text-[10px] border border-black">Edit</button>
+                                    <button class="bg-red-500 text-white px-2 py-0.5 text-[10px] border border-black">Delete</button>
+                                </div>
+                            </div>
+                            <div class="border-2 border-black p-2">
+                                <div class="flex justify-between text-xs font-bold">
+                                    <span>Registrasi Ditutup</span>
+                                    <span class="text-gray-500">1h ago</span>
+                                </div>
+                                <p class="text-xs mt-1">Kuota peserta sudah penuh.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 6.3: CRUD Aufaa -->
+            <div class="slide flex-col h-full w-full overflow-y-auto">
+                <div class="border-b-[3px] border-telkom-black mb-4 w-full flex justify-between items-center">
+                    <span class="bg-yellow-300 px-2 border-t-[3px] border-x-[3px] border-telkom-black text-sm">6.3 CRUD Organization</span>
+                    <span class="text-xs font-bold">Aufaa Zhafir Wicaksana</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+                    <!-- Code -->
+                    <div class="bg-[#282a36] p-4 border-[3px] border-telkom-black shadow-neo overflow-hidden text-xs font-mono text-white">
+                        <div class="mb-2 text-gray-400">// OrganizationController.php</div>
+                        <span class="code-keyword">public function</span> <span class="code-function">update</span>(Request $request, $id) {<br>
+                        &nbsp;&nbsp;$org = Organization::<span class="code-function">findOrFail</span>($id);<br>
+                        &nbsp;&nbsp;$org-><span class="code-function">update</span>([<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">'name'</span> => $request->name,<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">'description'</span> => $request->description,<br>
+                        &nbsp;&nbsp;]);<br><br>
+                        &nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-function">response</span>()-><span class="code-function">json</span>($org);<br>
+                        }
+                    </div>
+                    <!-- Result Mockup -->
+                    <div class="bg-white p-4 border-[3px] border-telkom-black shadow-neo flex flex-col">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 bg-gray-300 border-2 border-black rounded-full flex items-center justify-center">Logo</div>
+                            <div>
+                                <div class="font-bold">BEM Fakultas Informatika</div>
+                                <div class="text-xs text-gray-500">Organization ID: #102</div>
+                            </div>
+                        </div>
+                        <div class="border-t-2 border-black pt-2">
+                            <label class="text-xs font-bold">Organization Name</label>
+                            <input type="text" value="BEM Fakultas Informatika" class="w-full border border-black p-1 text-xs mb-2">
+                            <label class="text-xs font-bold">Description</label>
+                            <textarea class="w-full border border-black p-1 text-xs h-16">Wadah aspirasi mahasiswa informatika...</textarea>
+                            <button class="mt-2 bg-telkom-black text-white px-3 py-1 text-xs w-full">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 6.4: CRUD Faizul -->
+            <div class="slide flex-col h-full w-full overflow-y-auto">
+                <div class="border-b-[3px] border-telkom-black mb-4 w-full flex justify-between items-center">
+                    <span class="bg-yellow-300 px-2 border-t-[3px] border-x-[3px] border-telkom-black text-sm">6.4 CRUD Profile</span>
+                    <span class="text-xs font-bold">Muhammad Faizul Kamal</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+                    <!-- Code -->
+                    <div class="bg-[#282a36] p-4 border-[3px] border-telkom-black shadow-neo overflow-hidden text-xs font-mono text-white">
+                        <div class="mb-2 text-gray-400">// ProfileController.php</div>
+                        <span class="code-keyword">public function</span> <span class="code-function">update</span>(Request $request) {<br>
+                        &nbsp;&nbsp;$user = Auth::<span class="code-function">user</span>();<br>
+                        &nbsp;&nbsp;$user->name = $request->name;<br>
+                        &nbsp;&nbsp;<span class="code-keyword">if</span> ($request->password) {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;$user->password = Hash::<span class="code-function">make</span>($request->password);<br>
+                        &nbsp;&nbsp;}<br>
+                        &nbsp;&nbsp;$user-><span class="code-function">save</span>();<br>
+                        &nbsp;&nbsp;<span class="code-keyword">return</span> back()-><span class="code-function">with</span>(<span class="code-string">'success'</span>, <span class="code-string">'Updated!'</span>);<br>
+                        }
+                    </div>
+                    <!-- Result Mockup -->
+                    <div class="bg-white p-4 border-[3px] border-telkom-black shadow-neo flex flex-col">
+                        <div class="border-b-2 border-gray-200 pb-2 mb-2 font-bold">Edit Profile</div>
+                        <div class="grid grid-cols-1 gap-2">
+                            <div>
+                                <label class="text-xs">Full Name</label>
+                                <input type="text" value="Faizul Kamal" class="w-full border border-black p-1 text-sm">
+                            </div>
+                            <div>
+                                <label class="text-xs">Email</label>
+                                <input type="email" value="faizul@student.telkom.ac.id" class="w-full border border-black p-1 text-sm bg-gray-100" disabled>
+                            </div>
+                            <div>
+                                <label class="text-xs">New Password</label>
+                                <input type="password" placeholder="********" class="w-full border border-black p-1 text-sm">
+                            </div>
+                            <button class="bg-telkom-red text-white px-4 py-1 text-sm border-2 border-black mt-2">Update Profile</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 6.5: CRUD Kadek -->
+            <div class="slide flex-col h-full w-full overflow-y-auto">
+                <div class="border-b-[3px] border-telkom-black mb-4 w-full flex justify-between items-center">
+                    <span class="bg-yellow-300 px-2 border-t-[3px] border-x-[3px] border-telkom-black text-sm">6.5 CRUD Interaction</span>
+                    <span class="text-xs font-bold">Kadek Galih Mahotama</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+                    <!-- Code -->
+                    <div class="bg-[#282a36] p-4 border-[3px] border-telkom-black shadow-neo overflow-hidden text-xs font-mono text-white">
+                        <div class="mb-2 text-gray-400">// EventController.php (Bookmark)</div>
+                        <span class="code-keyword">public function</span> <span class="code-function">bookmarkEvent</span>($id) {<br>
+                        &nbsp;&nbsp;$user = Auth::<span class="code-function">user</span>();<br>
+                        &nbsp;&nbsp;<span class="code-keyword">if</span> (!$user->bookmarks()-><span class="code-function">where</span>(<span class="code-string">'event_id'</span>, $id)-><span class="code-function">exists</span>()) {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;$user->bookmarks()-><span class="code-function">attach</span>($id);<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-function">response</span>()-><span class="code-function">json</span>([<span class="code-string">'status'</span> => <span class="code-string">'added'</span>]);<br>
+                        &nbsp;&nbsp;}<br>
+                        &nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-function">response</span>()-><span class="code-function">json</span>([<span class="code-string">'status'</span> => <span class="code-string">'exists'</span>]);<br>
+                        }
+                    </div>
+                    <!-- Result Mockup -->
+                    <div class="bg-white p-4 border-[3px] border-telkom-black shadow-neo flex flex-col items-center justify-center">
+                        <div class="w-full border-2 border-black p-3 relative">
+                            <div class="absolute top-2 right-2 text-2xl text-yellow-500">★</div>
+                            <div class="h-24 bg-gray-200 mb-2 border border-black flex items-center justify-center text-gray-400">Event Banner</div>
+                            <h3 class="font-bold">Workshop UI/UX</h3>
+                            <p class="text-xs text-gray-500 mb-2">25 Dec 2025 • TULT 06.01</p>
+                            <div class="flex gap-2">
+                                <button class="flex-1 bg-telkom-black text-white text-xs py-1">Register</button>
+                                <button class="flex-1 bg-yellow-300 text-black text-xs py-1 border border-black font-bold">Bookmarked</button>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-xs font-mono bg-black text-green-400 p-2 w-full">
+                            HTTP 200 OK<br>
+                            { "status": "added" }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 7: PEMBAGIAN KERJA -->
+            <div class="slide flex-col h-full w-full overflow-y-auto">
+                <h2 class="text-3xl md:text-4xl mb-6 bg-telkom-black text-telkom-white inline-block px-4 py-2 self-start transform -rotate-1 shadow-neo">
+                    #7 Pembagian Kerja
+                </h2>
+                <div class="w-full overflow-x-auto">
+                    <table class="w-full border-[3px] border-telkom-black bg-white shadow-neo text-sm md:text-base">
+                        <thead class="bg-telkom-red text-white">
+                            <tr>
+                                <th class="p-3 border-r-[3px] border-telkom-black text-left">Nama Anggota</th>
+                                <th class="p-3 text-left">Fitur / CRUD</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y-[3px] divide-telkom-black">
+                            <tr class="hover:bg-yellow-50">
+                                <td class="p-3 border-r-[3px] border-telkom-black font-bold">Jabriel Bamasena Javier Rahardjanto</td>
+                                <td class="p-3">Event Management (Create, Edit, Delete Events)</td>
+                            </tr>
+                            <tr class="hover:bg-yellow-50">
+                                <td class="p-3 border-r-[3px] border-telkom-black font-bold">Rizky Saputra Al Amir</td>
+                                <td class="p-3">Announcement System (Updates & Notifications)</td>
+                            </tr>
+                            <tr class="hover:bg-yellow-50">
+                                <td class="p-3 border-r-[3px] border-telkom-black font-bold">Muhammad Faizul Kamal</td>
+                                <td class="p-3">User Profile & Authentication Flow</td>
+                            </tr>
+                            <tr class="hover:bg-yellow-50">
+                                <td class="p-3 border-r-[3px] border-telkom-black font-bold">Aufaa Zhafir Wicaksana</td>
+                                <td class="p-3">Organization Management (Entities & Logic)</td>
+                            </tr>
+                            <tr class="hover:bg-yellow-50">
+                                <td class="p-3 border-r-[3px] border-telkom-black font-bold">Kadek Galih Mahotama</td>
+                                <td class="p-3">Event Interaction (Registration & Bookmarking)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Controls -->
+        <div class="h-16 border-t-[3px] border-telkom-black bg-white flex items-center justify-between px-4 md:px-6 shrink-0">
+            <button onclick="prevSlide()" id="btn-prev" class="border-[3px] border-telkom-black px-4 md:px-6 py-2 shadow-neo font-bold hover:bg-telkom-black hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-sm md:text-base">
+                &lt; PREV
+            </button>
+            
+            <!-- Compact Dots for Mobile -->
+            <div class="flex gap-1 md:gap-2 overflow-x-auto max-w-[50%] px-2">
+                <!-- Generated by JS -->
+            </div>
+
+            <button onclick="nextSlide()" id="btn-next" class="border-[3px] border-telkom-black px-4 md:px-6 py-2 shadow-neo font-bold bg-telkom-red text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-sm md:text-base">
+                NEXT &gt;
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dotsContainer = document.querySelector('.flex.gap-1');
+        const counterEl = document.getElementById('slide-counter');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+
+        // Generate Dots
+        slides.forEach((_, i) => {
+            const dot = document.createElement('span');
+            dot.className = `dot w-2 h-2 md:w-3 md:h-3 bg-telkom-black rounded-full opacity-30 transition-all`;
+            dotsContainer.appendChild(dot);
+        });
+        const dots = document.querySelectorAll('.dot');
+
+        function updateUI() {
+            // Show/Hide Slides
+            slides.forEach((slide, index) => {
+                if(index === currentSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+
+            // Update Dots
+            dots.forEach((dot, index) => {
+                if(index === currentSlide) {
+                    dot.classList.remove('opacity-30');
+                    dot.classList.add('bg-telkom-red');
+                } else {
+                    dot.classList.add('opacity-30');
+                    dot.classList.remove('bg-telkom-red');
+                }
+            });
+
+            // Update Counter
+            counterEl.textContent = `${currentSlide + 1} / ${slides.length}`;
+
+            // Button States
+            btnPrev.disabled = currentSlide === 0;
+            
+            if(currentSlide === slides.length - 1) {
+                btnNext.textContent = "FINISH";
+                btnNext.classList.remove('bg-telkom-red');
+                btnNext.classList.add('bg-telkom-black');
+            } else {
+                btnNext.textContent = "NEXT >";
+                btnNext.classList.add('bg-telkom-red');
+                btnNext.classList.remove('bg-telkom-black');
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateUI();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateUI();
+            }
+        }
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Initialize
+        updateUI();
+    </script>
+</body>
+</html>
