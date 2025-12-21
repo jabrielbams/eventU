@@ -90,16 +90,19 @@
                         $formattedTime = $carbonTime->format('H:i') . ' WIB';
                         $formattedDate = $carbonDate->locale('id')->isoFormat('dddd, D MMMM YYYY');
                     @endphp
+                    @php
+                        $isCompleted = isset($event['status']) && $event['status'] === 'completed';
+                    @endphp
                     <div
-                        class="bg-white border-[3px] border-black shadow-[8px_8px_0px_#000] flex flex-col relative transition-transform hover:-translate-y-1">
+                        class="bg-white border-[3px] border-black shadow-[8px_8px_0px_#000] flex flex-col relative transition-transform hover:-translate-y-1 {{ $isCompleted ? 'bg-gray-100' : '' }}">
                         <!-- Image Container -->
                         <div class="relative w-full aspect-video border-b-[3px] border-black overflow-hidden group">
                             <img src="{{ $imageUrl }}"
-                                class="w-full h-full object-cover grayscale transition-all duration-300 group-hover:grayscale-0"
+                                class="w-full h-full object-cover transition-all duration-300 {{ $isCompleted ? 'grayscale opacity-70' : 'grayscale group-hover:grayscale-0' }}"
                                 alt="{{ $event['title'] }}">
                             <!-- Date Badge -->
                             <div
-                                class="absolute top-4 right-4 bg-white border-[3px] border-black p-2 text-center min-w-[60px] shadow-[4px_4px_0px_0px_#000]">
+                                class="absolute top-4 right-4 bg-white border-[3px] border-black p-2 text-center min-w-[60px] shadow-[4px_4px_0px_0px_#000] {{ $isCompleted ? 'opacity-70' : '' }}">
                                 <span
                                     class="block text-xs font-bold uppercase bg-black text-white px-1">{{ $month }}</span>
                                 <span class="block text-2xl font-black leading-none py-1">{{ $day }}</span>
@@ -109,31 +112,37 @@
                         <!-- Card Content -->
                         <div class="p-6 flex flex-col gap-4 flex-grow">
                             <!-- Category Tag -->
-                            <div>
+                            <div class="flex flex-wrap gap-2">
                                 <span
-                                    class="inline-block bg-industrial-red text-white px-3 py-1 text-xs font-bold uppercase border-[2px] border-black shadow-[2px_2px_0px_0px_#000]">
+                                    class="inline-block {{ $isCompleted ? 'bg-gray-400' : 'bg-industrial-red' }} text-white px-3 py-1 text-xs font-bold uppercase border-[2px] border-black shadow-[2px_2px_0px_0px_#000]">
                                     {{ $categoryName }}
                                 </span>
+                                @if($isCompleted)
+                                    <span
+                                        class="inline-block bg-green-500 text-white px-3 py-1 text-xs font-bold uppercase border-[2px] border-black shadow-[2px_2px_0px_0px_#000]">
+                                        ✓ Selesai
+                                    </span>
+                                @endif
                             </div>
 
                             <!-- Title -->
-                            <h3 class="text-2xl font-black uppercase leading-[0.95] tracking-tight min-h-[3rem]">
+                            <h3 class="text-2xl font-black uppercase leading-[0.95] tracking-tight min-h-[3rem] {{ $isCompleted ? 'text-gray-500' : '' }}">
                                 {{ $event['title'] }}
                             </h3>
 
                             <!-- Details -->
-                            <div class="mt-auto border-t-[3px] border-black pt-4 space-y-3">
-                                <div class="flex items-center gap-2 text-sm">
+                            <div class="mt-auto border-t-[3px] {{ $isCompleted ? 'border-gray-300' : 'border-black' }} pt-4 space-y-3">
+                                <div class="flex items-center gap-2 text-sm {{ $isCompleted ? 'opacity-60' : '' }}">
                                     <span class="text-base">📍</span>
-                                    <span class="font-bold text-gray-700">{{ Str::limit($event['location'], 30) }}</span>
+                                    <span class="font-bold {{ $isCompleted ? 'text-gray-400' : 'text-gray-700' }}">{{ Str::limit($event['location'], 30) }}</span>
                                 </div>
-                                <div class="flex items-center gap-2 text-sm">
+                                <div class="flex items-center gap-2 text-sm {{ $isCompleted ? 'opacity-60' : '' }}">
                                     <span class="text-base">📅</span>
-                                    <span class="font-bold text-gray-700">{{ $formattedDate }}</span>
+                                    <span class="font-bold {{ $isCompleted ? 'text-gray-400' : 'text-gray-700' }}">{{ $formattedDate }}</span>
                                 </div>
-                                <div class="flex items-center gap-2 text-sm">
+                                <div class="flex items-center gap-2 text-sm {{ $isCompleted ? 'opacity-60' : '' }}">
                                     <span class="text-base">🕒</span>
-                                    <span class="font-bold font-mono text-gray-700">{{ $formattedTime }}</span>
+                                    <span class="font-bold font-mono {{ $isCompleted ? 'text-gray-400' : 'text-gray-700' }}">{{ $formattedTime }}</span>
                                 </div>
                             </div>
                         </div>

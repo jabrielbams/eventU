@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Api\OrganizationController;
 use App\Http\Middleware\CheckUserRole;
 use App\Http\Middleware\AuthenticateWithToken;
@@ -83,6 +85,16 @@ Route::middleware(AuthenticateWithToken::class)->group(function () {
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile/delete', [ProfileController::class, 'destroy'])->name('profile.delete');
+
+    // Comment CRUD routes
+    Route::post('/events/{eventId}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::put('/comments/{id}', [CommentController::class, 'update'])->name('comments.update');
+    Route::delete('/comments/{id}', [CommentController::class, 'destroy'])->name('comments.destroy');
+
+    // Review CRUD routes
+    Route::post('/events/{eventId}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::put('/reviews/{id}', [ReviewController::class, 'update'])->name('reviews.update');
+    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 
     // Student-only routes
     Route::middleware(CheckUserRole::class.':student')->group(function () {

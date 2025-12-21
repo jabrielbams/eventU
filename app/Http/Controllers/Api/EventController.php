@@ -19,7 +19,7 @@ class EventController extends Controller
         // Handling Request
         try {
             $query = Event::with(['category', 'organization', 'user'])
-                ->where('status', 'published'); // Only show published events
+                ->whereIn('status', ['published', 'completed']); // Show published and completed events
 
             // Handling Search
             if ($request->has('search')) {
@@ -516,7 +516,7 @@ class EventController extends Controller
             // Query events with same filters as index
             $query = Event::with(['category', 'organization', 'user'])
                 ->whereIn('id', $eventIds)
-                ->where('status', 'published');
+                ->whereIn('status', ['published', 'completed']);
 
             // Handling Search
             if ($request->has('search')) {

@@ -59,7 +59,18 @@ class EventController extends Controller
             $responseData = json_decode($httpResponse->content(), true);
             $event = $responseData['data'];
 
-            return view('events.show', compact('event'));
+            // Get comments and reviews for the event
+            $eventModel = Event::with(['comments.user', 'reviews.user'])->findOrFail($id);
+            $comments = $eventModel->comments()->with('user')->latest()->get();
+            $reviews = $eventModel->reviews()->with('user')->latest()->get();
+
+            // Check if current user has already reviewed this event
+            $userReview = null;
+            if (auth()->check()) {
+                $userReview = $eventModel->reviews()->where('user_id', auth()->id())->first();
+            }
+
+            return view('events.show', compact('event', 'comments', 'reviews', 'userReview'));
         } catch (Exception $e) {
             return redirect()->route('events.index')
                 ->with('error', 'Event tidak ditemukan.');

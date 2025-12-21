@@ -154,6 +154,293 @@
                 @endif
             </div>
         </div>
+
+        <!-- Reviews Section -->
+        <div class="mt-8 bg-white border-[3px] border-black shadow-[8px_8px_0px_#000] p-8">
+            <h2 class="text-2xl font-black uppercase mb-6 tracking-tight flex items-center gap-2">
+                <span>⭐</span> Review Event
+            </h2>
+
+            @php
+                $eventDate = \Carbon\Carbon::parse($event['date']);
+                $isPastEvent = $eventDate->isPast() || (isset($event['status']) && $event['status'] === 'completed');
+            @endphp
+
+            <!-- Review Form (only for students who attended past/completed events and haven't reviewed yet) -->
+            @if(auth()->check() && auth()->user()->role === 'student' && $isPastEvent && !$userReview)
+                <div class="mb-8 p-6 bg-gray-50 border-[2px] border-black">
+                    <h3 class="text-lg font-black uppercase mb-4">Tulis Review Anda</h3>
+                    <form method="POST" action="{{ route('reviews.store', $event['id']) }}">
+                        @csrf
+                        <div class="mb-4">
+                            <label class="block text-sm font-black uppercase mb-2">Rating</label>
+                            <div class="flex gap-2" id="star-rating">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="rating" value="{{ $i }}" class="hidden peer" required>
+                                        <span class="text-3xl text-gray-300 peer-checked:text-yellow-500 hover:text-yellow-400 transition-colors star-icon" data-rating="{{ $i }}">★</span>
+                                    </label>
+                                @endfor
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="review-comment" class="block text-sm font-black uppercase mb-2">Komentar</label>
+                            <textarea name="comment" id="review-comment" rows="3" 
+                                class="w-full px-4 py-3 border-[2px] border-black font-medium focus:outline-none focus:ring-2 focus:ring-industrial-red" 
+                                placeholder="Bagikan pengalaman Anda tentang event ini..." required maxlength="1000"></textarea>
+                        </div>
+                        <button type="submit" 
+                            class="bg-industrial-red text-white font-black uppercase py-3 px-6 border-[2px] border-black shadow-[4px_4px_0px_#000] hover:bg-red-700 hover:-translate-y-[1px] hover:-translate-x-[1px] hover:shadow-[5px_5px_0px_#000] transition-all">
+                            Kirim Review
+                        </button>
+                    </form>
+                </div>
+            @elseif(!$isPastEvent)
+                <div class="mb-8 p-4 bg-yellow-50 border-[2px] border-yellow-400">
+                    <p class="text-yellow-800 font-medium">⚠️ Review hanya dapat diberikan setelah event selesai.</p>
+                </div>
+            @elseif($userReview)
+                <div class="mb-8 p-4 bg-green-50 border-[2px] border-green-400">
+                    <p class="text-green-800 font-medium">✓ Anda sudah memberikan review untuk event ini.</p>
+                </div>
+            @elseif(auth()->check() && auth()->user()->role !== 'student')
+                <div class="mb-8 p-4 bg-blue-50 border-[2px] border-blue-400">
+                    <p class="text-blue-800 font-medium">ℹ️ Hanya mahasiswa yang dapat memberikan review.</p>
+                </div>
+            @elseif(!auth()->check())
+                <div class="mb-8 p-4 bg-gray-50 border-[2px] border-gray-400">
+                    <p class="text-gray-800 font-medium">🔐 Silakan login untuk memberikan review.</p>
+                </div>
+            @endif
+
+            <!-- Reviews List -->
+            @if(isset($reviews) && $reviews->count() > 0)
+                <div class="space-y-4">
+                    @foreach($reviews as $review)
+                        <div class="p-4 bg-gray-50 border-[2px] border-black" id="review-{{ $review->id }}">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <span class="font-bold">{{ $review->user->name ?? 'Anonymous' }}</span>
+                                    <div class="flex gap-1 mt-1">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            <span class="text-lg {{ $i <= $review->rating ? 'text-yellow-500' : 'text-gray-300' }}">★</span>
+                                        @endfor
+                                    </div>
+                                </div>
+                                <span class="text-sm text-gray-500 font-mono">{{ $review->created_at->diffForHumans() }}</span>
+                            </div>
+                            <p class="text-gray-700">{{ $review->comment }}</p>
+                            
+                            @if(auth()->check() && (auth()->id() === $review->user_id || (auth()->user()->role === 'organizer' && $event['user_id'] === auth()->id())))
+                                <div class="mt-3 flex gap-2">
+                                    @if(auth()->id() === $review->user_id)
+                                        <button type="button" onclick="toggleEditReview({{ $review->id }})" 
+                                            class="text-sm bg-white text-black font-bold uppercase py-1 px-3 border-[2px] border-black shadow-[2px_2px_0px_#000] hover:bg-black hover:text-white transition-all">
+                                            Edit
+                                        </button>
+                                    @endif
+                                    <form method="POST" action="{{ route('reviews.destroy', $review->id) }}" class="inline" onsubmit="return confirm('Hapus review ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                            class="text-sm bg-red-500 text-white font-bold uppercase py-1 px-3 border-[2px] border-black shadow-[2px_2px_0px_#000] hover:bg-red-700 transition-all">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                                
+                                @if(auth()->id() === $review->user_id)
+                                    <!-- Edit Review Form (hidden by default) -->
+                                    <div class="mt-4 hidden" id="edit-review-{{ $review->id }}">
+                                        <form method="POST" action="{{ route('reviews.update', $review->id) }}">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="mb-3">
+                                                <label class="block text-sm font-bold mb-1">Rating</label>
+                                                <div class="flex gap-2 star-rating-container" data-current-rating="{{ $review->rating }}">
+                                                    @for($i = 1; $i <= 5; $i++)
+                                                        <label class="cursor-pointer">
+                                                            <input type="radio" name="rating" value="{{ $i }}" class="hidden" {{ $review->rating == $i ? 'checked' : '' }} required>
+                                                            <span class="text-2xl {{ $i <= $review->rating ? 'text-yellow-500' : 'text-gray-300' }} hover:text-yellow-400 transition-colors">★</span>
+                                                        </label>
+                                                    @endfor
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <textarea name="comment" rows="2" 
+                                                    class="w-full px-3 py-2 border-[2px] border-black font-medium focus:outline-none focus:ring-2 focus:ring-industrial-red" 
+                                                    required maxlength="1000">{{ $review->comment }}</textarea>
+                                            </div>
+                                            <div class="flex gap-2">
+                                                <button type="submit" 
+                                                    class="text-sm bg-green-500 text-white font-bold uppercase py-1 px-3 border-[2px] border-black shadow-[2px_2px_0px_#000] hover:bg-green-700 transition-all">
+                                                    Simpan
+                                                </button>
+                                                <button type="button" onclick="toggleEditReview({{ $review->id }})" 
+                                                    class="text-sm bg-gray-300 text-black font-bold uppercase py-1 px-3 border-[2px] border-black shadow-[2px_2px_0px_#000] hover:bg-gray-400 transition-all">
+                                                    Batal
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                @endif
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <p class="text-gray-500 font-medium">Belum ada review untuk event ini.</p>
+            @endif
+        </div>
+
+        <!-- Comments Section -->
+        <div class="mt-8 bg-white border-[3px] border-black shadow-[8px_8px_0px_#000] p-8">
+            <h2 class="text-2xl font-black uppercase mb-6 tracking-tight flex items-center gap-2">
+                <span>💬</span> Diskusi
+            </h2>
+
+            <!-- Comment Form -->
+            @auth
+                <div class="mb-8 p-6 bg-gray-50 border-[2px] border-black">
+                    <h3 class="text-lg font-black uppercase mb-4">Tulis Komentar</h3>
+                    <form method="POST" action="{{ route('comments.store', $event['id']) }}">
+                        @csrf
+                        <div class="mb-4">
+                            <textarea name="content" rows="3" 
+                                class="w-full px-4 py-3 border-[2px] border-black font-medium focus:outline-none focus:ring-2 focus:ring-industrial-red" 
+                                placeholder="Tulis komentar atau pertanyaan Anda..." required maxlength="1000"></textarea>
+                        </div>
+                        <button type="submit" 
+                            class="bg-black text-white font-black uppercase py-3 px-6 border-[2px] border-black shadow-[4px_4px_0px_#666] hover:bg-gray-800 hover:-translate-y-[1px] hover:-translate-x-[1px] hover:shadow-[5px_5px_0px_#666] transition-all">
+                            Kirim Komentar
+                        </button>
+                    </form>
+                </div>
+            @endauth
+
+            <!-- Comments List -->
+            @if(isset($comments) && $comments->count() > 0)
+                <div class="space-y-4">
+                    @foreach($comments as $comment)
+                        <div class="p-4 bg-gray-50 border-[2px] border-black" id="comment-{{ $comment->id }}">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="font-bold">{{ $comment->user->name ?? 'Anonymous' }}</span>
+                                <span class="text-sm text-gray-500 font-mono">{{ $comment->created_at->diffForHumans() }}</span>
+                            </div>
+                            <p class="text-gray-700">{{ $comment->content }}</p>
+                            
+                            @if(auth()->check() && (auth()->id() === $comment->user_id || (auth()->user()->role === 'organizer' && $event['user_id'] === auth()->id())))
+                                <div class="mt-3 flex gap-2">
+                                    @if(auth()->id() === $comment->user_id)
+                                        <button type="button" onclick="toggleEditComment({{ $comment->id }})" 
+                                            class="text-sm bg-white text-black font-bold uppercase py-1 px-3 border-[2px] border-black shadow-[2px_2px_0px_#000] hover:bg-black hover:text-white transition-all">
+                                            Edit
+                                        </button>
+                                    @endif
+                                    <form method="POST" action="{{ route('comments.destroy', $comment->id) }}" class="inline" onsubmit="return confirm('Hapus komentar ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                            class="text-sm bg-red-500 text-white font-bold uppercase py-1 px-3 border-[2px] border-black shadow-[2px_2px_0px_#000] hover:bg-red-700 transition-all">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                                
+                                @if(auth()->id() === $comment->user_id)
+                                    <!-- Edit Comment Form (hidden by default) -->
+                                    <div class="mt-4 hidden" id="edit-comment-{{ $comment->id }}">
+                                        <form method="POST" action="{{ route('comments.update', $comment->id) }}">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="mb-3">
+                                                <textarea name="content" rows="2" 
+                                                    class="w-full px-3 py-2 border-[2px] border-black font-medium focus:outline-none focus:ring-2 focus:ring-industrial-red" 
+                                                    required maxlength="1000">{{ $comment->content }}</textarea>
+                                            </div>
+                                            <div class="flex gap-2">
+                                                <button type="submit" 
+                                                    class="text-sm bg-green-500 text-white font-bold uppercase py-1 px-3 border-[2px] border-black shadow-[2px_2px_0px_#000] hover:bg-green-700 transition-all">
+                                                    Simpan
+                                                </button>
+                                                <button type="button" onclick="toggleEditComment({{ $comment->id }})" 
+                                                    class="text-sm bg-gray-300 text-black font-bold uppercase py-1 px-3 border-[2px] border-black shadow-[2px_2px_0px_#000] hover:bg-gray-400 transition-all">
+                                                    Batal
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                @endif
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <p class="text-gray-500 font-medium">Belum ada komentar untuk event ini.</p>
+            @endif
+        </div>
     </div>
 </div>
+
+<script>
+    function toggleEditComment(commentId) {
+        const editForm = document.getElementById('edit-comment-' + commentId);
+        if (editForm) {
+            editForm.classList.toggle('hidden');
+        }
+    }
+
+    function toggleEditReview(reviewId) {
+        const editForm = document.getElementById('edit-review-' + reviewId);
+        if (editForm) {
+            editForm.classList.toggle('hidden');
+        }
+    }
+
+    // Star rating interactive selection - works for all star rating containers
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle all radio inputs for ratings
+        document.querySelectorAll('input[name="rating"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const rating = parseInt(this.value);
+                const container = this.closest('.flex');
+                if (container) {
+                    const stars = container.querySelectorAll('span');
+                    stars.forEach((star, index) => {
+                        if (index < rating) {
+                            star.classList.remove('text-gray-300');
+                            star.classList.add('text-yellow-500');
+                        } else {
+                            star.classList.remove('text-yellow-500');
+                            star.classList.add('text-gray-300');
+                        }
+                    });
+                }
+            });
+        });
+
+        // Also handle click on star spans for visual feedback
+        document.querySelectorAll('label input[name="rating"] + span').forEach(star => {
+            star.addEventListener('click', function() {
+                const input = this.previousElementSibling;
+                if (input && input.type === 'radio') {
+                    const rating = parseInt(input.value);
+                    const container = this.closest('.flex');
+                    if (container) {
+                        const stars = container.querySelectorAll('span');
+                        stars.forEach((s, index) => {
+                            if (index < rating) {
+                                s.classList.remove('text-gray-300');
+                                s.classList.add('text-yellow-500');
+                            } else {
+                                s.classList.remove('text-yellow-500');
+                                s.classList.add('text-gray-300');
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
 @endsection
