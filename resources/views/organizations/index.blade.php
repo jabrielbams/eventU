@@ -63,13 +63,11 @@
                                 @endif
 
                                 <!-- Stats -->
-                                <div class="flex items-center gap-4 mb-4 text-xs font-mono">
-                                    <span class="bg-[#CCFF00] border border-black px-2 py-1">
-                                        👥 {{ $org->members_count }} anggota
-                                    </span>
-                                    @if($org->email)
-                                        <span class="text-gray-500 truncate">📧 {{ $org->email }}</span>
-                                    @endif
+                                <div class="mb-4">
+                                    <div class="bg-[#CCFF00] border-2 border-black px-4 py-3 flex items-center justify-between">
+                                        <span class="font-mono text-sm font-bold uppercase">Anggota</span>
+                                        <span class="font-black text-2xl">👥 {{ $org->members_count }}</span>
+                                    </div>
                                 </div>
 
                                 <!-- Actions -->
