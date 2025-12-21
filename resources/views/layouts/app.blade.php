@@ -80,6 +80,16 @@
                 <a href="{{ route('events.index') }}"
                     class="{{ $btnClass }} {{ request()->routeIs('events.*') ? $btnActive : $btnDefault . ' ' . $btnHover }}">::
                     Cari Event</a>
+                @auth
+                    @if(Auth::user()->role === 'organizer')
+                        <a href="{{ route('organizations.index') }}"
+                            class="{{ $btnClass }} {{ request()->routeIs('organizations.index', 'organizations.create', 'organizations.edit') ? $btnActive : $btnDefault . ' ' . $btnHover }}">::
+                            Daftar Organisasi</a>
+                        <a href="{{ route('organizations.manage') }}"
+                            class="{{ $btnClass }} {{ request()->routeIs('organizations.manage') ? $btnActive : $btnDefault . ' ' . $btnHover }}">::
+                            Kelola Anggota</a>
+                    @endif
+                @endauth
                 <a href="{{ route('profile.edit') }}"
                     class="{{ $btnClass }} {{ request()->routeIs('profile.*') ? $btnActive : $btnDefault . ' ' . $btnHover }}">::
                     Profil Saya</a>

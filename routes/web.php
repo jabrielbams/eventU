@@ -6,7 +6,8 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\Api\OrganizationController;
+use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\Api\OrganizationController as ApiOrganizationController;
 use App\Http\Middleware\CheckUserRole;
 use App\Http\Middleware\AuthenticateWithToken;
 use App\Models\Event;
@@ -69,6 +70,20 @@ Route::middleware(AuthenticateWithToken::class)->group(function () {
 
         // Add this route for deleting events
         Route::delete('/events/{id}', [EventController::class, 'destroy'])->name('events.destroy');
+
+        // Organization CRUD routes
+        Route::get('/organizations', [OrganizationController::class, 'index'])->name('organizations.index');
+        Route::get('/organizations/create', [OrganizationController::class, 'create'])->name('organizations.create');
+        Route::post('/organizations', [OrganizationController::class, 'store'])->name('organizations.store');
+        Route::get('/organizations/{id}/edit', [OrganizationController::class, 'edit'])->name('organizations.edit');
+        Route::put('/organizations/{id}', [OrganizationController::class, 'update'])->name('organizations.update');
+        Route::delete('/organizations/{id}', [OrganizationController::class, 'destroy'])->name('organizations.destroy');
+
+        // Organization member management routes
+        Route::get('/organizations/manage', [OrganizationController::class, 'manage'])->name('organizations.manage');
+        Route::post('/organizations/{organizationId}/approve/{userId}', [OrganizationController::class, 'approveUser'])->name('organizations.approve');
+        Route::post('/organizations/{organizationId}/reject/{userId}', [OrganizationController::class, 'rejectUser'])->name('organizations.reject');
+        Route::delete('/organizations/{organizationId}/remove/{userId}', [OrganizationController::class, 'removeUser'])->name('organizations.remove');
     });
 
     // Event Catalog (public for authenticated users)
