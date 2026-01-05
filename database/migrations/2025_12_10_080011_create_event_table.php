@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->date('event_date');
-            $table->time('event_time');
+            $table->date('date');
+            $table->time('time');
             $table->string('location');
             $table->foreignId('category_id')->constrained('category')->onDelete('cascade');
             $table->foreignId('organization_id')->constrained('organizations')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('banner')->nullable();
+            $table->string('image');
             $table->enum('status', ['draft', 'published', 'cancelled', 'completed'])->default('draft');
             $table->boolean('is_online')->default(false);
             $table->string('registration_link')->nullable();

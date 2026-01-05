@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Organization extends Model
 {
-    /** @use HasFactory<\Database\Factories\OrganizationFactory> */
     use HasFactory;
 
     protected $fillable = [
@@ -18,6 +17,13 @@ class Organization extends Model
         'address',
         'logo',
     ];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'organization_user')
+            ->withPivot('status')
+            ->withTimestamps();
+    }
 
     public function events()
     {

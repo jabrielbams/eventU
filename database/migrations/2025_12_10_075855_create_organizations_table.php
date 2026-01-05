@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
             $table->string('logo')->nullable();
+            $table->string('logo_path')->nullable();
             $table->timestamps();
         });
     }
